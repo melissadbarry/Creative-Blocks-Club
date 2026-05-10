@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Creative Blocks — Brand Clarity Quiz</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: Georgia, serif; background: #f7f5f0; color: #2c2c2c; min-height: 100vh; }
+.wrap { max-width: 640px; margin: 0 auto; padding: 32px 20px; }
+h1 { color: #C65A2E; font-weight: normal; font-size: 1.7rem; margin-bottom: 4px; }
+.sub { font-family: sans-serif; font-size: 0.83rem; color: #999; margin-bottom: 28px; }
+.card { background: white; border-radius: 12px; padding: 24px; margin-bottom: 16px; box-shadow: 0 2px 12px rgba(0,0,0,.06); }
+.progress-track { background: #e0dbd2; border-radius: 4px; height: 6px; margin-bottom: 6px; }
+.progress-fill { background: #C65A2E; height: 6px; border-radius: 4px; transition: width .3s; }
+.progress-label { font-family: sans-serif; font-size: 0.78rem; color: #999; margin-bottom: 20px; }
+.section-tag { font-family: sans-serif; font-size: 0.62rem; text-transform: uppercase; letter-spacing: 2px; color: #C65A2E; margin-bottom: 8px; }
+.q-text { font-size: 1rem; line-height: 1.5; margin-bottom: 6px; }
+.q-hint { font-family: sans-serif; font-size: 0.8rem; color: #aaa; margin-bottom: 16px; font-style: italic; }
+.opt { display: flex; align-items: flex-start; gap: 12px; padding: 12px 16px; border: 2px solid #e8e4dc; border-radius: 8px; cursor: pointer; margin-bottom: 10px; font-family: sans-serif; font-size: 0.88rem; line-height: 1.4; transition: all .15s; user-select: none; }
+.opt:hover { border-color: #C65A2E; background: #fdf8f5; }
+.opt.sel { border-color: #C65A2E; background: #fdf8f5; }
+.dot { width: 16px; height: 16px; border-radius: 50%; border: 2px solid #ccc; flex-shrink: 0; margin-top: 1px; transition: all .15s; }
+.opt.sel .dot { background: #C65A2E; border-color: #C65A2E; }
+.box { width: 16px; height: 16px; border-radius: 4px; border: 2px solid #ccc; flex-shrink: 0; margin-top: 1px; transition: all .15s; display: flex; align-items: center; justify-content: center; }
+.opt.sel .box { background: #C65A2E; border-color: #C65A2E; }
+.opt.sel .box::after { content: '✓'; color: white; font-size: 10px; font-weight: bold; }
+.nav { display: flex; justify-content: space-between; margin-top: 8px; }
+.btn { font-family: sans-serif; font-size: 0.88rem; padding: 10px 24px; border-radius: 8px; cursor: pointer; border: none; }
+.btn-next { background: #C65A2E; color: white; }
+.btn-next:disabled { background: #ddd; cursor: not-allowed; }
+.btn-back { background: transparent; border: 2px solid #e0dbd2; color: #777; }
+.btn-back:disabled { color: #ccc; border-color: #eee; cursor: default; }
+.btn-restart { background: transparent; border: 2px solid #C65A2E; color: #C65A2E; }
+.score-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px; }
+.score-card { background: white; border-radius: 12px; padding: 20px; text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,.06); }
+.score-num { font-size: 2rem; font-weight: bold; }
+.score-lbl { font-family: sans-serif; font-size: 0.75rem; color: #999; margin-top: 4px; }
+.tag { font-family: sans-serif; font-size: 0.68rem; padding: 3px 10px; border-radius: 12px; display: inline-block; margin-left: 6px; }
+.tag-s { background: #e6f4ea; color: #2d7a3a; }
+.tag-m { background: #fff8e1; color: #b07d10; }
+.tag-w { background: #fdecea; color: #c0392b; }
+.dim-score { font-family: sans-serif; font-size: 0.78rem; color: #bbb; float: right; }
+.dim-tip { font-family: sans-serif; font-size: 0.86rem; color: #555; line-height: 1.6; margin-top: 8px; }
+.priority-card { border: 2px solid #C65A2E; background: #fdf8f5; }
+.priority-label { font-family: sans-serif; font-size: 0.62rem; text-transform: uppercase; letter-spacing: 2px; color: #C65A2E; margin-bottom: 8px; }
+.priority-text { font-family: sans-serif; font-size: 0.88rem; color: #444; line-height: 1.7; }
+.arch-badge { font-family: sans-serif; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 2px; color: white; padding: 4px 14px; border-radius: 20px; display: inline-block; margin-bottom: 10px; }
+.arch-name { font-size: 1.8rem; margin-bottom: 6px; }
+.arch-tagline { font-family: sans-serif; font-size: 0.9rem; color: #888; margin-bottom: 14px; }
+.arch-desc { font-family: sans-serif; font-size: 0.88rem; color: #555; line-height: 1.6; }
+.center { text-align: center; margin-top: 12px; }
+.hidden { display: none; }
+.insight-block { background: #f7f5f0; border-radius: 8px; padding: 14px 16px; margin-top: 10px; font-family: sans-serif; font-size: 0.84rem; color: #555; line-height: 1.6; }
+.insight-block strong { color: #C65A2E; }
+.section-divider { font-family: sans-serif; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 3px; color: #bbb; margin: 24px 0 12px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- INTRO -->
+
+  <div id="intro">
+    <h1>Brand Clarity Quiz</h1>
+    <p class="sub">Creative Blocks Club · 15 questions · ~5 min</p>
+    <div class="card">
+      <p style="font-size:1.1rem;margin-bottom:12px">Let's pressure-test the brand.</p>
+      <p style="font-family:sans-serif;font-size:0.9rem;color:#666;line-height:1.7">
+        This quiz covers <strong>Audience</strong>, <strong>Values</strong>, <strong>Positioning</strong>, <strong>Voice</strong>, and <strong>Business Model</strong>. Some questions let you pick multiple answers. Be honest — vague answers produce vague results.
+      </p>
+      <p style="font-family:sans-serif;font-size:0.9rem;color:#666;line-height:1.7;margin-top:10px">
+        At the end: a brand archetype, a clarity score per dimension, and one priority action.
+      </p>
+      <div class="center">
+        <button class="btn btn-next" style="margin-top:20px;font-size:0.95rem;padding:13px 32px" onclick="startQuiz()">Start →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- QUIZ -->
+
+  <div id="quiz" class="hidden">
+    <h1>Brand Clarity Quiz</h1>
+    <p class="sub">Creative Blocks Club</p>
+    <div class="progress-track"><div class="progress-fill" id="pFill" style="width:0%"></div></div>
+    <div class="progress-label" id="pLabel"></div>
+    <div id="qCard" class="card"></div>
+    <div class="nav">
+      <button class="btn btn-back" id="backBtn" onclick="goBack()">← Back</button>
+      <button class="btn btn-next" id="nextBtn" onclick="goNext()" disabled>Next →</button>
+    </div>
+  </div>
+
+  <!-- RESULTS -->
+
+  <div id="results" class="hidden"></div>
+
+</div>
+
+<script>
+// multi: true = checkbox multi-select, false = single radio
+var Qs = [
+
+  // ── AUDIENCE CLARITY ──────────────────────────────────────────
+  { sec:"Audience Clarity", multi: true,
+    q:"Which of these best describes the people you want at Creative Blocks? Pick all that apply.",
+    hint:"Select all that feel true.",
+    opts:[
+      {t:"People who work independently and miss the ambient energy of being around others", s:{a:3}},
+      {t:"People who have a specific project, task, or backlog they keep putting off", s:{a:3}},
+      {t:"People who want to meet others but find traditional networking performative", s:{a:2}},
+      {t:"Anyone who needs a place to sit with wifi and get work done", s:{a:0}},
+      {t:"Creative minds — writers, designers, engineers, builders — regardless of title", s:{a:2}},
+      {t:"People in career transition who need structure and community", s:{a:1}}
+    ]
+  },
+
+  { sec:"Audience Clarity", multi: false,
+    q:"What is the ONE emotional state you want someone in when they decide to book a session?",
+    hint:"Pick the one that resonates most.",
+    opts:[
+      {t:"\"I've been putting this off for weeks and I need external accountability to finally do it\"", s:{a:3}},
+      {t:"\"I'm tired of working alone in silence — I miss being around people who care about their work\"", s:{a:3}},
+      {t:"\"I want to meet interesting people but not in a networking context\"", s:{a:2}},
+      {t:"\"I just need a change of scenery and some structure today\"", s:{a:1}}
+    ]
+  },
+
+  { sec:"Audience Clarity", multi: true,
+    q:"Which personality traits describe your ideal Creative Blocks attendee? Pick all that apply.",
+    hint:"Beyond job title — who are they as a person?",
+    opts:[
+      {t:"Ambitious but prone to getting stuck in their own head", s:{a:3}},
+      {t:"Introverted but craves meaningful, low-pressure social connection", s:{a:3}},
+      {t:"Has side projects or creative work beyond their day job", s:{a:2}},
+      {t:"Extroverted, energetic, loves meeting new people", s:{a:0}},
+      {t:"Values depth over small talk — would rather bond over shared work than cocktail chat", s:{a:3}},
+      {t:"Disciplined and organized — just needs the right environment", s:{a:1}}
+    ]
+  },
+
+  { sec:"Audience Clarity", multi: false,
+    q:"Someone comes to Creative Blocks and leaves feeling like it wasn't for them. What happened?",
+    hint:"The wrong-fit scenario tells you a lot about who the right fit is.",
+    opts:[
+      {t:"They wanted more socializing during the work blocks, not just at the end", s:{a:3}},
+      {t:"They didn't have real work to bring — they came out of curiosity", s:{a:2}},
+      {t:"They found the silence uncomfortable and the structure too rigid", s:{a:3}},
+      {t:"They were hoping to make business contacts and it felt too casual", s:{a:3}}
+    ]
+  },
+
+  { sec:"Audience Clarity", multi: true,
+    q:"What does your ideal attendee value most in how they work? Pick all that apply.",
+    hint:"This shapes content, copy, and how you talk about the brand.",
+    opts:[
+      {t:"Deep focus — they protect their attention fiercely", s:{a:3}},
+      {t:"Autonomy — they hate being micromanaged or tracked", s:{a:2}},
+      {t:"Community — they believe work is better when shared", s:{a:3}},
+      {t:"Output — they measure their day by what they shipped", s:{a:2}},
+      {t:"Flexibility — they work when and how it suits them", s:{a:1}},
+      {t:"Meaning — they want the work they do to matter", s:{a:2}}
+    ]
+  },
+
+  // ── THE PHILOSOPHY ────────────────────────────────────────────
+  { sec:"The Philosophy", multi: false,
+    q:"If you had to remove one element from Creative Blocks, which would hurt the brand more?",
+    hint:"There's no right answer — this reveals what you believe the product actually is.",
+    opts:[
+      {t:"Remove the structure (the blocks, the rules, the format) — it becomes just people hanging out", s:{ph:2}},
+      {t:"Remove the social layer (no breaks, no hangout, heads down all day) — it becomes just a coworking space", s:{ph:3}},
+      {t:"Both would hurt equally — neither works without the other", s:{ph:3}},
+      {t:"Honestly I'm not sure — I haven't thought about it that way", s:{ph:0}}
+    ]
+  },
+
+  { sec:"The Philosophy", multi: false,
+    q:"What is the real reason someone comes back to Creative Blocks a second time?",
+    hint:"Not why they came the first time. Why they return.",
+    opts:[
+      {t:"The format works — they got more done than anywhere else and want to replicate that", s:{ph:2}},
+      {t:"The people — they met someone or felt something they don't get working alone", s:{ph:2}},
+      {t:"Both — the productivity AND the human connection. One without the other wouldn't be enough", s:{ph:3}},
+      {t:"The ritual — it gives their week a shape and anchor point", s:{ph:2}}
+    ]
+  },
+
+  { sec:"The Philosophy", multi: false,
+    q:"Someone attends Creative Blocks in Toronto, then visits another city and finds a session there. What should feel identical?",
+    hint:"This defines what the brand actually is at its core.",
+    opts:[
+      {t:"The format — same block structure, same rules, same rhythm. The people will always be different", s:{ph:1}},
+      {t:"The feeling — the same sense of calm focus, low pressure, and genuine connection, regardless of city", s:{ph:3}},
+      {t:"The values — they should know immediately that the host believes in the same things", s:{ph:3}},
+      {t:"All of the above — format, feeling, and values must be identical for it to be Creative Blocks", s:{ph:3}}
+    ]
+  },
+
+  { sec:"The Philosophy", multi: false,
+    q:"The venue is revealed only 24 hours before the session. What is the real intention behind that?",
+    hint:"Be honest — is it intentional brand design or just how it started?",
+    opts:[
+      {t:"It creates anticipation and a sense of discovery — part of the experience", s:{ph:3}},
+      {t:"It's practical — venues aren't always confirmed far in advance", s:{ph:1}},
+      {t:"It filters for committed people — if you show up anyway, you're the right person", s:{ph:3}},
+      {t:"Honestly it started practically and I haven't decided if it's a brand choice yet", s:{ph:1}}
+    ]
+  },
+
+  { sec:"The Philosophy", multi: true,
+    q:"In an era of AI, automation, and remote-first work — what human need does Creative Blocks actually serve?",
+    hint:"This is the deeper 'why'. Pick all that feel true.",
+    opts:[
+      {t:"The need to be witnessed — to do your work in the presence of other humans who are doing theirs", s:{ph:3}},
+      {t:"The need for accountability that isn't surveillance — no tracking, no boss, just shared intention", s:{ph:3}},
+      {t:"The need for organic connection — friendships that form through doing, not networking", s:{ph:3}},
+      {t:"The need for ritual — a structured anchor in an otherwise unstructured work life", s:{ph:2}},
+      {t:"The need to feel like your work matters — being around others who care reminds you that you care too", s:{ph:3}}
+    ]
+  },
+
+  // ── PURPOSE & VALUES ──────────────────────────────────────────
+  { sec:"Purpose & Values", multi: false,
+    q:"Complete this sentence honestly: Creative Blocks exists because...",
+    hint:"One answer only — your gut response.",
+    opts:[
+      {t:"...remote work has made people productive but lonely, and that trade-off shouldn't be permanent", s:{p:3}},
+      {t:"...people work better in the presence of others and that shouldn't require a corporate office", s:{p:3}},
+      {t:"...I wanted to create the kind of community I wished existed when I went remote", s:{p:2}},
+      {t:"...there's a gap in the market between coworking spaces (expensive) and working alone (isolating)", s:{p:1}}
+    ]
+  },
+
+  { sec:"Purpose & Values", multi: true,
+    q:"Which values does Creative Blocks stand for? Pick the ones you'd defend publicly.",
+    hint:"If you'd only pick them when convenient, don't pick them.",
+    opts:[
+      {t:"Access — community shouldn't be gated by money", s:{p:3}},
+      {t:"Depth — real connection comes from doing things together, not talking about ourselves", s:{p:3}},
+      {t:"Intentionality — every element of the session is designed, nothing is random", s:{p:2}},
+      {t:"Inclusivity — everyone with real work to do belongs here", s:{p:2}},
+      {t:"Growth — we're here to move things forward, not just feel good", s:{p:2}},
+      {t:"Freedom — no performance, no pressure, show up as you are", s:{p:2}}
+    ]
+  },
+
+  { sec:"Purpose & Values", multi: false,
+    q:"In 5 years, Creative Blocks is...",
+    hint:"Pick the future that excites you most.",
+    opts:[
+      {t:"A nonprofit with free community sessions in 10+ cities, run by trained local hosts, funded through retreats, offsites, merch and workshops", s:{p:3}},
+      {t:"A profitable brand with sponsorships from aligned companies and a premium corporate offering", s:{p:2}},
+      {t:"A tight, well-known Toronto community that I run personally and keep intentionally small", s:{p:1}},
+      {t:"I honestly haven't committed to a vision yet", s:{p:0}}
+    ]
+  },
+
+  // ── POSITIONING ───────────────────────────────────────────────
+  { sec:"Positioning", multi: false,
+    q:"What is the one thing Creative Blocks does that nothing else does?",
+    hint:"Not features. The actual feeling or outcome.",
+    opts:[
+      {t:"It gives you the experience of working alongside coworkers — without the job, the politics, or the obligation", s:{pos:3}},
+      {t:"It makes deep work social without making it performative", s:{pos:3}},
+      {t:"It's free structured coworking in a real café", s:{pos:1}},
+      {t:"It's a community for remote workers", s:{pos:0}}
+    ]
+  },
+
+  { sec:"Positioning", multi: true,
+    q:"Which of these brands or experiences has a similar energy to what you want Creative Blocks to feel like?",
+    hint:"Vibes matter. Pick what resonates.",
+    opts:[
+      {t:"A well-designed independent coffee shop where regulars become friends", s:{pos:2}},
+      {t:"A silent disco — structured, intentional, surprisingly social", s:{pos:3}},
+      {t:"A writers' room — creative minds working in parallel toward their own goals", s:{pos:3}},
+      {t:"A CrossFit gym — community formed through shared effort, not small talk", s:{pos:2}},
+      {t:"A WeWork — professional, accessible, functional", s:{pos:0}},
+      {t:"A university library — quiet, focused, but full of ambitious people", s:{pos:1}}
+    ]
+  },
+
+  // ── TONE & VOICE ──────────────────────────────────────────────
+  { sec:"Tone & Voice", multi: true,
+    q:"Which words describe how you want Creative Blocks to sound? Pick all that feel right.",
+    hint:"Honest > aspirational here.",
+    opts:[
+      {t:"Direct — short sentences, no fluff", s:{t:3}},
+      {t:"Warm — people should feel welcomed, not evaluated", s:{t:2}},
+      {t:"Confident — we know what this is and what it isn't", s:{t:3}},
+      {t:"Inspiring — content that makes people want to create", s:{t:1}},
+      {t:"Honest — we'd rather say less and mean it than say more and lose people", s:{t:3}},
+      {t:"Playful — light touch, doesn't take itself too seriously", s:{t:2}}
+    ]
+  },
+
+  { sec:"Tone & Voice", multi: false,
+    q:"What should someone feel the moment they land on the Creative Blocks Instagram or website?",
+    hint:"One feeling, not a list.",
+    opts:[
+      {t:"\"Finally — someone made this.\"", s:{t:3}},
+      {t:"\"This looks cool, I want to be part of this.\"", s:{t:2}},
+      {t:"\"Oh interesting, tell me more.\"", s:{t:1}},
+      {t:"\"This seems like a nice productivity event.\"", s:{t:0}}
+    ]
+  },
+
+  // ── BUSINESS MODEL ────────────────────────────────────────────
+  { sec:"Business Model", multi: true,
+    q:"Which of these revenue streams feel aligned with the Creative Blocks brand? Pick all you'd pursue.",
+    hint:"Think about what preserves the brand's integrity.",
+    opts:[
+      {t:"Brand sponsorships — specialty coffee, productivity tools, indie brands that share the values", s:{b:3}},
+      {t:"Corporate offsites and team deep work days — paid, B2B version of the format", s:{b:3}},
+      {t:"Retreats — multi-day immersive experiences (3–5 days, paid)", s:{b:3}},
+      {t:"Monthly workshops or skill sessions (paid, optional add-on)", s:{b:2}},
+      {t:"Merch — minimal, intentional, community-driven", s:{b:2}},
+      {t:"A paid membership tier with premium perks", s:{b:1}},
+      {t:"Grants and nonprofit funding", s:{b:2}}
+    ]
+  },
+
+  { sec:"Business Model", multi: false,
+    q:"The free community sessions are...",
+    hint:"Be honest about the role they play.",
+    opts:[
+      {t:"The core of the brand — they exist because community shouldn't cost money, full stop", s:{b:2}},
+      {t:"The top of a funnel — they build trust and audience that makes the paid offerings viable", s:{b:3}},
+      {t:"Both — they're genuinely free AND they feed the paid ecosystem", s:{b:3}},
+      {t:"Currently free until I figure out the model", s:{b:0}}
+    ]
+  },
+
+  { sec:"Business Model", multi: false,
+    q:"If Creative Blocks expands to other cities, hosts are...",
+    hint:"This shapes whether it scales as a movement, a franchise, or a brand.",
+    opts:[
+      {t:"Volunteers who run sessions because they believe in the mission", s:{b:1}},
+      {t:"Licensed operators — they pay a small fee for the brand, playbook, and support", s:{b:3}},
+      {t:"Paid contractors employed by Creative Blocks central", s:{b:2}},
+      {t:"Haven't thought about expansion yet", s:{b:0}}
+    ]
+  }
+
+];
+
+var DIMS = [
+  {key:"ph", label:"Philosophy & Vision", max:0,
+    tips:[
+      "The philosophy isn't clear yet. You're building something but haven't articulated what you believe about why it works. Without that, hosts in other cities won't know what to protect.",
+      "There's a philosophy emerging but it's held loosely. The tension between format and community hasn't been resolved into a unified belief yet.",
+      "You understand that format and community are interdependent — neither works without the other. Now write that down explicitly. It becomes the host training document, the brand manifesto, the content filter.",
+      "Crystal clear. You know exactly what Creative Blocks is at its core, why people return, and what must stay identical across cities. This is the foundation for scaling faithfully."
+    ]
+  },
+  {key:"a", label:"Audience Clarity", max:0,
+    tips:[
+      "No clear audience yet. You're describing everyone who works. That's not an audience — it's the entire internet. The brand cannot speak to anyone until it decides who it's primarily speaking to.",
+      "You have intuitions about the audience but they're not sharp enough to drive content or copy decisions. Push beyond job titles into emotional state and personality.",
+      "You're getting there. The person is starting to come into focus. Now give them a name, a day, a specific frustration. Make them real.",
+      "Clear. You know the person — not just their job title but their internal world. This is the foundation everything else builds on."
+    ]
+  },
+  {key:"p", label:"Purpose & Values", max:0,
+    tips:[
+      "The 'why' is absent or feels borrowed. Without a clear purpose, the brand will drift and content will feel hollow.",
+      "There's a 'why' but it's functional, not emotional. 'Fill a gap in the market' is a strategy, not a belief. Go deeper.",
+      "Values are present but not yet weaponized. The best brand values are ones you'd be willing to lose customers over. Which of yours are that strong?",
+      "Clear values, clear purpose. The brand knows what it stands for and what it won't compromise on. That's rare and powerful."
+    ]
+  },
+  {key:"pos", label:"Positioning", max:0,
+    tips:[
+      "No differentiated position yet. 'Free coworking' and 'remote worker community' are categories, not positions. What is the specific feeling only Creative Blocks creates?",
+      "Positioning is emerging but still leans on features (free, café-based). Features can be copied. The feeling of 'coworkers without the job' cannot.",
+      "Strong instincts. You know what makes this different. Now say it out loud in every piece of content, every caption, every email.",
+      "Ownable and distinct. There's a clear white space Creative Blocks occupies. Protect it and repeat it consistently."
+    ]
+  },
+  {key:"t", label:"Tone & Voice", max:0,
+    tips:[
+      "No consistent voice yet. The website copy is already strong — short, direct, no performance. That voice exists. It just needs to be applied everywhere.",
+      "Some tonal clarity but inconsistency risks eroding the brand. The audience is anti-performance; the content needs to match that.",
+      "Voice is mostly consistent. One watch-out: avoid drifting into generic productivity or wellness content that sounds like everyone else.",
+      "Voice is clear and on-brand. Confident, direct, warm without being soft. Keep it."
+    ]
+  },
+  {key:"b", label:"Business Model", max:0,
+    tips:[
+      "No clear sustainability path. This creates existential pressure that will eventually force decisions at the wrong time. Design the model now.",
+      "The free model is a values statement, but values alone don't pay for growth. Retreats, corporate offsites, and brand partnerships are all brand-aligned. Pick one to test first.",
+      "You're thinking about this clearly. The key is sequencing: nail the free community first, build the audience, then activate the paid layer on top.",
+      "Business model is thought through, values-aligned, and layered correctly. Free community at the base, paid services on top. Execute."
+    ]
+  }
+];
+
+var PRIORITY = {
+  a:"Define the person before anything else. Not their job title — their emotional state on a Monday morning. What are they feeling when they book a Creative Blocks session? Write that sentence. Put it on the website. Build every piece of content from it.",
+  p:"Write the manifesto. You have the opening line already: 'Free because community shouldn't cost money.' Now write the next five sentences. What do you believe about work, connection, and what remote life has taken from people? That document becomes the brand's north star.",
+  pos:"Say the thing out loud: Creative Blocks gives you the feeling of working alongside real coworkers — without the job, the politics, or the obligation. That's the position. Put it in the bio, the website header, the first line of every caption. Stop letting people figure it out themselves.",
+  t:"Lock the voice. Take the website copy as the master reference — short, direct, confident, human. Every piece of content gets filtered through that. If a caption sounds like a productivity coach or a wellness brand, rewrite it.",
+  b:"Run one paid experiment in the next 60 days. Not a full pivot — one test. A corporate deep work day or a branded partnership pitch. Proof of concept that the free community and the paid layer can coexist."
+};
+
+var ARCHETYPES = [
+  {name:"The Connector", tagline:"Community-first. Purpose-driven. Human above all.", min:0.75, color:"#C65A2E",
+   desc:"Your brand is built on a genuine belief: that people work better together, and that connection shouldn't be transactional. The risk is staying too broad. The opportunity is becoming the definitive brand for the ambitious, independent, quietly lonely creative professional."},
+  {name:"The Architect", tagline:"Structure creates freedom.", min:0.55, color:"#4a7fa5",
+   desc:"Your edge is intentional design — the block format, the rules, the hangout baked into the calendar invite. You engineer experiences that feel effortless because they're actually thought through. Lead with the system more boldly."},
+  {name:"The Catalyst", tagline:"Show up. Get unstuck. Move forward.", min:0.38, color:"#5a8a5e",
+   desc:"Your brand is about momentum. People leave having moved something forward that was stuck. That transformation — even in one day — is the product. The community is the side effect. Make that outcome the headline."},
+  {name:"The Wanderer", tagline:"Still finding your north star.", min:0, color:"#888",
+   desc:"The concept is genuinely strong but the brand identity hasn't crystallized yet. That's the work. Start with audience — one specific person, one specific feeling — and everything else will follow."}
+];
+
+// Calculate max scores dynamically
+DIMS.forEach(function(d) {
+  var total = 0;
+  Qs.forEach(function(q) {
+    if (q.multi) {
+      // max = sum of all opts with this key
+      q.opts.forEach(function(o) { if (o.s[d.key]) total += o.s[d.key]; });
+    } else {
+      // max = highest single opt
+      var m = 0;
+      q.opts.forEach(function(o) { if (o.s[d.key] && o.s[d.key] > m) m = o.s[d.key]; });
+      total += m;
+    }
+  });
+  d.max = total || 1;
+});
+
+var cur = 0;
+// answers[i] = array of selected option indices
+var answers = {};
+
+function startQuiz() {
+  document.getElementById('intro').classList.add('hidden');
+  document.getElementById('quiz').classList.remove('hidden');
+  render();
+}
+
+function render() {
+  var q = Qs[cur];
+  var pct = Math.round((cur / Qs.length) * 100);
+  document.getElementById('pFill').style.width = pct + '%';
+  document.getElementById('pLabel').textContent = 'Question ' + (cur+1) + ' of ' + Qs.length + ' · ' + q.sec;
+  document.getElementById('backBtn').disabled = cur === 0;
+  var sel = answers[cur] || [];
+  document.getElementById('nextBtn').disabled = sel.length === 0;
+  document.getElementById('nextBtn').textContent = cur === Qs.length - 1 ? 'See Results →' : 'Next →';
+
+  var html = '<div class="section-tag">' + q.sec + '</div>';
+  html += '<div class="q-text">' + q.q + '</div>';
+  html += '<div class="q-hint">' + q.hint + '</div>';
+  q.opts.forEach(function(o, i) {
+    var isSel = sel.indexOf(i) > -1;
+    var shape = q.multi
+      ? '<div class="box"></div>'
+      : '<div class="dot"></div>';
+    html += '<div class="opt' + (isSel?' sel':'') + '" onclick="pick(' + i + ')">' + shape + o.t + '</div>';
+  });
+  document.getElementById('qCard').innerHTML = html;
+}
+
+function pick(i) {
+  var q = Qs[cur];
+  if (!answers[cur]) answers[cur] = [];
+  if (q.multi) {
+    var idx = answers[cur].indexOf(i);
+    if (idx > -1) answers[cur].splice(idx, 1);
+    else answers[cur].push(i);
+  } else {
+    answers[cur] = [i];
+  }
+  render();
+}
+
+function goNext() {
+  var sel = answers[cur] || [];
+  if (sel.length === 0) return;
+  if (cur < Qs.length - 1) { cur++; render(); }
+  else showResults();
+}
+
+function goBack() { if (cur > 0) { cur--; render(); } }
+
+function showResults() {
+  document.getElementById('quiz').classList.add('hidden');
+
+  var totals = {a:0, p:0, pos:0, t:0, b:0};
+  Object.keys(answers).forEach(function(qi) {
+    var sel = answers[qi];
+    sel.forEach(function(oi) {
+      var sc = Qs[qi].opts[oi].s;
+      Object.keys(sc).forEach(function(k) { totals[k] = (totals[k]||0) + sc[k]; });
+    });
+  });
+
+  // Normalise each dimension 0–1
+  var norms = {};
+  DIMS.forEach(function(d) { norms[d.key] = Math.min(totals[d.key] / d.max, 1); });
+  var overallNorm = Object.values(norms).reduce(function(a,b){return a+b;},0) / DIMS.length;
+  var pct = Math.round(overallNorm * 100);
+
+  var arch = ARCHETYPES.find(function(a){ return overallNorm >= a.min; });
+  var lowest = DIMS.slice().sort(function(a,b){ return norms[a.key]-norms[b.key]; })[0];
+  var scoreColor = pct >= 70 ? '#2d7a3a' : pct >= 45 ? '#b07d10' : '#c0392b';
+
+  function lvl(key) {
+    var r = norms[key];
+    return r>=.75?3:r>=.45?2:r>=.2?1:0;
+  }
+  function tag(key) {
+    var r = norms[key];
+    if (r>=.75) return '<span class="tag tag-s">Strong</span>';
+    if (r>=.45) return '<span class="tag tag-m">Developing</span>';
+    return '<span class="tag tag-w">Needs work</span>';
+  }
+  function scoreFmt(key) {
+    return Math.round(norms[key]*100) + '%';
+  }
+
+  var html = '<h1 style="color:#C65A2E;font-weight:normal;font-size:1.7rem;margin-bottom:4px">Your Results</h1>';
+  html += '<p class="sub">Creative Blocks Club — Brand Clarity Report</p>';
+
+  html += '<div class="card" style="border-left:4px solid ' + arch.color + '">';
+  html += '<span class="arch-badge" style="background:' + arch.color + '">Brand Archetype</span>';
+  html += '<div class="arch-name">' + arch.name + '</div>';
+  html += '<div class="arch-tagline">"' + arch.tagline + '"</div>';
+  html += '<div class="arch-desc">' + arch.desc + '</div></div>';
+
+  html += '<div class="score-grid">';
+  html += '<div class="score-card"><div class="score-num" style="color:' + scoreColor + '">' + pct + '%</div><div class="score-lbl">Overall Brand Clarity</div></div>';
+  html += '<div class="score-card"><div class="score-num" style="color:#C65A2E">' + arch.name.split(' ')[1] + '</div><div class="score-lbl">Your Archetype</div></div>';
+  html += '</div>';
+
+  html += '<div class="section-divider">Dimension Breakdown</div>';
+
+  DIMS.forEach(function(d) {
+    html += '<div class="card">';
+    html += '<div style="display:flex;align-items:center;flex-wrap:wrap;gap:4px">';
+    html += '<span style="font-size:.95rem">' + d.label + '</span>' + tag(d.key);
+    html += '<span class="dim-score">' + scoreFmt(d.key) + '</span></div>';
+    html += '<div class="dim-tip">' + d.tips[lvl(d.key)] + '</div></div>';
+  });
+
+  html += '<div class="section-divider">What To Do First</div>';
+  html += '<div class="card priority-card">';
+  html += '<div class="priority-label">Your #1 Priority Right Now</div>';
+  html += '<div class="priority-text">' + PRIORITY[lowest.key] + '</div></div>';
+
+  html += '<div class="center"><button class="btn btn-restart" onclick="restart()">↺ Retake</button></div>';
+
+  var el = document.getElementById('results');
+  el.innerHTML = html;
+  el.classList.remove('hidden');
+  window.scrollTo(0,0);
+}
+
+function restart() {
+  cur = 0; answers = {};
+  document.getElementById('results').classList.add('hidden');
+  document.getElementById('intro').classList.remove('hidden');
+  window.scrollTo(0,0);
+}
+</script>
+
+</body>
+</html>
