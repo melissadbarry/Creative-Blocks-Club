@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Creative Blocks — Community Masterclass Application</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* Brand system pulled from creativeblocks.club:
+   bg #f5f3ef · ink #1c1917 · accent #c65a2e (dark #a94a24) ·
+   muted #78716c / #a8a29e · soft wash #fcefe8 · border #e7e5e4 ·
+   display Anton, body Inter */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Inter', -apple-system, sans-serif; background: #f5f3ef; color: #1c1917; min-height: 100vh; -webkit-font-smoothing: antialiased; }
+.wrap { max-width: 640px; margin: 0 auto; padding: 36px 20px; }
+h1 { font-family: 'Anton', sans-serif; font-weight: 400; font-size: 2.4rem; line-height: 1.05; text-transform: uppercase; letter-spacing: 0.5px; color: #1c1917; margin-bottom: 6px; }
+h1 .accent { color: #c65a2e; }
+.sub { font-size: 0.8rem; color: #a8a29e; margin-bottom: 28px; letter-spacing: 0.3px; }
+.card { background: #fff; border: 1px solid #e7e5e4; border-radius: 14px; padding: 26px; margin-bottom: 16px; box-shadow: 0 1px 3px rgba(28,25,23,.04); }
+.progress-track { background: #e7e5e4; border-radius: 4px; height: 6px; margin-bottom: 8px; }
+.progress-fill { background: #c65a2e; height: 6px; border-radius: 4px; transition: width .3s; }
+.progress-label { font-size: 0.76rem; color: #a8a29e; margin-bottom: 20px; font-weight: 500; }
+.section-tag { font-size: 0.66rem; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; color: #c65a2e; margin-bottom: 6px; }
+.section-title { font-family: 'Anton', sans-serif; font-weight: 400; font-size: 1.6rem; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 20px; color: #1c1917; }
+.field { margin-bottom: 24px; }
+.q-text { font-size: 1rem; font-weight: 600; line-height: 1.5; margin-bottom: 6px; color: #1c1917; }
+.q-text .req { color: #c65a2e; }
+.q-text .opt-label { font-size: 0.68rem; font-weight: 600; color: #a8a29e; text-transform: uppercase; letter-spacing: 1px; margin-left: 6px; }
+.q-hint { font-size: 0.82rem; color: #78716c; margin-bottom: 12px; }
+.q-eg { font-size: 0.8rem; color: #a8a29e; margin-bottom: 12px; line-height: 1.7; }
+.q-eg strong { color: #78716c; font-weight: 600; }
+input[type=text], textarea { width: 100%; font-family: 'Inter', sans-serif; font-size: 0.92rem; color: #1c1917; padding: 12px 14px; border: 1.5px solid #e7e5e4; border-radius: 9px; background: #fff; transition: all .15s; resize: vertical; }
+input[type=text]::placeholder, textarea::placeholder { color: #c4beb8; }
+input[type=text]:focus, textarea:focus { outline: none; border-color: #c65a2e; background: #fcefe8; }
+textarea { min-height: 96px; line-height: 1.55; }
+.opt { display: flex; align-items: flex-start; gap: 12px; padding: 13px 16px; border: 1.5px solid #e7e5e4; border-radius: 9px; cursor: pointer; margin-bottom: 10px; font-size: 0.9rem; line-height: 1.4; transition: all .15s; user-select: none; color: #1c1917; }
+.opt:hover { border-color: #c65a2e; background: #fcefe8; }
+.opt.sel { border-color: #c65a2e; background: #fcefe8; font-weight: 500; }
+.dot { width: 16px; height: 16px; border-radius: 50%; border: 2px solid #d6d3d1; flex-shrink: 0; margin-top: 1px; transition: all .15s; }
+.opt.sel .dot { background: #c65a2e; border-color: #c65a2e; box-shadow: inset 0 0 0 3px #fff; }
+.note { font-size: 0.83rem; color: #57534e; line-height: 1.65; background: #fcefe8; border-radius: 9px; padding: 13px 15px; margin-top: 12px; }
+.note strong { color: #a94a24; font-weight: 700; }
+.err { font-size: 0.78rem; color: #c44d4d; margin-top: 6px; display: none; font-weight: 500; }
+.field.invalid .err { display: block; }
+.field.invalid input[type=text], .field.invalid textarea { border-color: #c44d4d; }
+.nav { display: flex; justify-content: space-between; margin-top: 8px; gap: 12px; }
+.btn { font-family: 'Inter', sans-serif; font-size: 0.85rem; font-weight: 600; padding: 12px 26px; border-radius: 9px; cursor: pointer; border: none; transition: all .15s; letter-spacing: 0.2px; }
+.btn-next { background: #c65a2e; color: #fff; }
+.btn-next:hover { background: #a94a24; }
+.btn-back { background: transparent; border: 1.5px solid #d6d3d1; color: #78716c; }
+.btn-back:hover:not(:disabled) { border-color: #78716c; }
+.btn-back:disabled { color: #d6d3d1; border-color: #ebe9e6; cursor: default; }
+.btn-restart { background: transparent; border: 1.5px solid #c65a2e; color: #c65a2e; }
+.btn-restart:hover { background: #fcefe8; }
+.center { text-align: center; margin-top: 14px; }
+.hidden { display: none; }
+.intro-p { font-size: 0.92rem; color: #57534e; line-height: 1.75; margin-top: 12px; }
+.intro-p strong { color: #1c1917; font-weight: 600; }
+.review-row { font-size: 0.88rem; line-height: 1.6; padding: 14px 0; border-bottom: 1px solid #f0eeec; }
+.review-row:last-child { border-bottom: none; }
+.review-q { color: #a8a29e; font-size: 0.72rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px; }
+.review-a { color: #1c1917; white-space: pre-wrap; }
+.review-a.empty { color: #c4beb8; font-style: italic; }
+.thanks-icon { font-size: 2rem; text-align: center; margin-bottom: 8px; color: #c65a2e; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- INTRO -->
+  <div id="intro">
+    <h1>Community <span class="accent">Masterclass</span></h1>
+    <p class="sub">Creative Blocks Club · Expert Application · ~5 min</p>
+    <div class="card">
+      <p style="font-size:1.1rem">Teach something you know. To people who'll use it.</p>
+      <p class="intro-p">
+        Creative Blocks Masterclasses are short, focused sessions — <strong>20–25 minutes + Q&amp;A</strong> — where members of the community share real, transferable expertise with each other.
+      </p>
+      <p class="intro-p">
+        This isn't a webinar and it isn't a sales pitch. It's a member teaching one genuinely useful thing in a psychologically safe room. If that's you, this form is how you raise your hand.
+      </p>
+      <p class="intro-p" style="color:#a8a29e">
+        Most questions are short. A few are paragraph answers — that's where we get to know how you think.
+      </p>
+      <div class="center">
+        <button class="btn btn-next" style="margin-top:20px;font-size:0.95rem;padding:13px 32px" onclick="start()">Start →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- FORM -->
+  <div id="form" class="hidden">
+    <h1>Community <span class="accent">Masterclass</span></h1>
+    <p class="sub">Creative Blocks Club · Expert Application</p>
+    <div class="progress-track"><div class="progress-fill" id="pFill" style="width:0%"></div></div>
+    <div class="progress-label" id="pLabel"></div>
+    <div id="stepCard" class="card"></div>
+    <div class="nav">
+      <button class="btn btn-back" id="backBtn" onclick="goBack()">← Back</button>
+      <button class="btn btn-next" id="nextBtn" onclick="goNext()">Next →</button>
+    </div>
+  </div>
+
+  <!-- THANK YOU -->
+  <div id="thanks" class="hidden"></div>
+
+</div>
+
+<script>
+// ── Submission config ──────────────────────────────────────────────
+// Formspree: create a form at https://formspree.io, then paste the ID
+// from your endpoint (the part after /f/, e.g. "xbjnqkpl") below.
+// While this is empty, the form falls back to email / copy-to-clipboard.
+var FORMSPREE_ID = "";
+// Fallback intake address used only when FORMSPREE_ID is empty.
+var SUBMIT_EMAIL = "hello@creativeblocks.club";
+
+var SECTIONS = [
+  {
+    tag: "Section 1 of 4",
+    title: "Basic Information",
+    fields: [
+      { id:"name", type:"text", required:true,
+        q:"First &amp; last name",
+        ph:"e.g. Jordan Rivera" },
+      { id:"email", type:"email", required:true,
+        q:"Email",
+        hint:"So we can follow up with next steps. Not shared publicly.",
+        ph:"you@example.com" },
+      { id:"role", type:"text", required:true,
+        q:"Profession / role",
+        eg:"<strong>e.g.</strong> UX Designer · Therapist · Product Manager · Copywriter · Startup Founder · Marketing Strategist · Software Engineer" },
+      { id:"industry", type:"text", required:true,
+        q:"Industry",
+        eg:"<strong>e.g.</strong> Tech · Wellness · Design · Finance · Education · Marketing · Creative Arts" },
+      { id:"location", type:"text", required:false,
+        q:"Where are you currently based?",
+        hint:"Optional — nice for community connection.",
+        ph:"e.g. Toronto, Canada" },
+      { id:"links", type:"textarea", required:false,
+        q:"Where can people find you online?",
+        hint:"Optional but encouraged.",
+        eg:"LinkedIn · website · Instagram · portfolio · podcast · newsletter",
+        ph:"Drop any links you'd like attendees to see." }
+    ]
+  },
+  {
+    tag: "Section 2 of 4",
+    title: "Your Masterclass Idea",
+    fields: [
+      { id:"topic", type:"text", required:true,
+        q:"What topic would you love to teach or share with the Creative Blocks community?",
+        hint:"This is your main title / theme.",
+        eg:"<strong>e.g.</strong> Mindfulness for High Performers · Productivity Without Burnout · Building a Personal Brand on LinkedIn · Storytelling for Business · UX Psychology · Negotiation Skills · Financial Basics for Freelancers" },
+      { id:"insight", type:"textarea", required:true,
+        q:"What practical insight, skill, or perspective could participants apply to their own work, business, or creative life after your session?",
+        hint:"The transferable value — not just “what you do.”",
+        eg:"Could be: <strong>a mindset shift · a framework · a practical tool · a workflow · a communication strategy · a productivity approach · a leadership lesson · a creative process</strong>" },
+      { id:"why", type:"textarea", required:true,
+        q:"Why do you think this topic matters for the Creative Blocks community specifically?",
+        hint:"Show us you understand who's in the room." },
+      { id:"walkaway", type:"textarea", required:true,
+        q:"What would participants walk away with after your session?",
+        hint:"Be concrete about the outcome." }
+    ]
+  },
+  {
+    tag: "Section 3 of 4",
+    title: "Format & Logistics",
+    fields: [
+      { id:"hosted", type:"radio", required:true,
+        q:"Have you ever hosted a workshop, training, webinar, or presentation before?",
+        opts:["Yes","No"] },
+      { id:"hosted_link", type:"text", required:false,
+        showIf:{ field:"hosted", value:"Yes" },
+        q:"Feel free to share a link or example.",
+        hint:"Optional.",
+        ph:"Link or short description" },
+      { id:"concise", type:"radio", required:true,
+        q:"This format is intentionally short and focused (20–25 minutes + Q&amp;A). Are you comfortable keeping your session concise and actionable?",
+        opts:["Yes","No"] },
+      { id:"resource", type:"textarea", required:false,
+        q:"Would you like to share a free resource, tool, or offer with participants at the end of the session?",
+        hint:"Optional.",
+        eg:"<strong>e.g.</strong> PDF · template · newsletter · website · discovery call · community offer · free guide",
+        note:"<strong>A gentle boundary:</strong> light sharing is welcome, but sessions should stay primarily educational rather than promotional. The room is here to learn, not to be sold to." },
+      { id:"recording", type:"radio", required:true,
+        q:"Are you comfortable with the session being recorded and potentially shared as Creative Blocks content?",
+        opts:["Yes","No","Let's discuss"] },
+      { id:"sformat", type:"radio", required:false,
+        q:"Preferred session format",
+        hint:"Optional — helps us prep the room.",
+        opts:["Presentation","Interactive discussion","Live demo","Fireside chat","Workshop exercises"] }
+    ]
+  },
+  {
+    tag: "Section 4 of 4",
+    title: "Personal Motivation",
+    fields: [
+      { id:"motivation", type:"textarea", required:true,
+        q:"What motivates you to contribute to the Creative Blocks community through this session?",
+        hint:"No wrong answer — we're listening for energy, not polish." }
+    ]
+  }
+];
+
+var data = {};
+var errs = {};
+var cur = 0;
+
+function start() {
+  document.getElementById('intro').classList.add('hidden');
+  document.getElementById('form').classList.remove('hidden');
+  render();
+}
+
+function totalSteps() { return SECTIONS.length + 1; } // +1 review step
+
+function render() {
+  var pct = Math.round((cur / totalSteps()) * 100);
+  document.getElementById('pFill').style.width = pct + '%';
+  document.getElementById('backBtn').disabled = cur === 0;
+  var nextBtn = document.getElementById('nextBtn');
+
+  if (cur < SECTIONS.length) {
+    var sec = SECTIONS[cur];
+    document.getElementById('pLabel').textContent = sec.tag + ' · ' + sec.title;
+    nextBtn.textContent = 'Next →';
+    var html = '<div class="section-tag">' + sec.tag + '</div>';
+    html += '<div class="section-title">' + sec.title + '</div>';
+    sec.fields.forEach(function(f) {
+      if (!fieldVisible(f)) return;
+      var val = data[f.id] || '';
+      html += '<div class="field' + (errs[f.id] ? ' invalid' : '') + '" id="field-' + f.id + '">';
+      html += '<div class="q-text">' + f.q;
+      html += f.required ? ' <span class="req">*</span>' : ' <span class="opt-label">optional</span>';
+      html += '</div>';
+      if (f.hint) html += '<div class="q-hint">' + f.hint + '</div>';
+      if (f.eg) html += '<div class="q-eg">' + f.eg + '</div>';
+      if (f.type === 'text' || f.type === 'email') {
+        html += '<input type="' + (f.type === 'email' ? 'email' : 'text') + '" id="in-' + f.id + '" value="' + esc(val) + '" placeholder="' + (f.ph||'') + '" oninput="setVal(\'' + f.id + '\',this.value)">';
+      } else if (f.type === 'textarea') {
+        html += '<textarea id="in-' + f.id + '" placeholder="' + (f.ph||'') + '" oninput="setVal(\'' + f.id + '\',this.value)">' + esc(val) + '</textarea>';
+      } else if (f.type === 'radio') {
+        f.opts.forEach(function(o, oi) {
+          var s = (val === o) ? ' sel' : '';
+          html += '<div class="opt' + s + '" onclick="pickRadio(\'' + f.id + '\',' + oi + ')"><div class="dot"></div>' + esc(o) + '</div>';
+        });
+      }
+      if (f.note) html += '<div class="note">' + f.note + '</div>';
+      html += '<div class="err">' + (errs[f.id] || 'This one’s required.') + '</div>';
+      html += '</div>';
+    });
+    document.getElementById('stepCard').innerHTML = html;
+  } else {
+    // Review step
+    document.getElementById('pLabel').textContent = 'Final step · Review & submit';
+    nextBtn.textContent = 'Submit →';
+    var rhtml = '<div class="section-tag">Almost done</div>';
+    rhtml += '<div class="section-title">Review your application</div>';
+    SECTIONS.forEach(function(sec) {
+      sec.fields.forEach(function(f) {
+        if (!fieldVisible(f)) return;
+        var v = data[f.id];
+        rhtml += '<div class="review-row">';
+        rhtml += '<div class="review-q">' + stripTags(f.q) + '</div>';
+        if (v && v.trim()) rhtml += '<div class="review-a">' + esc(v) + '</div>';
+        else rhtml += '<div class="review-a empty">— not answered —</div>';
+        rhtml += '</div>';
+      });
+    });
+    document.getElementById('stepCard').innerHTML = rhtml;
+  }
+  window.scrollTo(0,0);
+}
+
+function esc(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+function stripTags(s) { return String(s).replace(/<[^>]*>/g,'').replace(/&amp;/g,'&'); }
+
+function setVal(id, v) {
+  data[id] = v;
+  if (v.trim()) {
+    delete errs[id];
+    var fld = document.getElementById('field-' + id);
+    if (fld) fld.classList.remove('invalid');
+  }
+}
+
+function fieldVisible(f) {
+  if (!f.showIf) return true;
+  return data[f.showIf.field] === f.showIf.value;
+}
+
+function isEmail(s) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(s).trim());
+}
+
+function findField(id) {
+  for (var i = 0; i < SECTIONS.length; i++) {
+    var fs = SECTIONS[i].fields;
+    for (var j = 0; j < fs.length; j++) if (fs[j].id === id) return fs[j];
+  }
+  return null;
+}
+
+function pickRadio(id, oi) {
+  var f = findField(id);
+  if (!f) return;
+  data[id] = f.opts[oi];
+  delete errs[id];
+  render();
+}
+
+function validateStep() {
+  if (cur >= SECTIONS.length) return true;
+  var sec = SECTIONS[cur];
+  var ok = true;
+  sec.fields.forEach(function(f) {
+    if (!fieldVisible(f)) { delete errs[f.id]; return; }
+    var v = data[f.id] ? String(data[f.id]).trim() : '';
+    if (f.required && !v) { errs[f.id] = 'This one’s required.'; ok = false; }
+    else if (f.type === 'email' && v && !isEmail(v)) { errs[f.id] = 'Please enter a valid email address.'; ok = false; }
+    else { delete errs[f.id]; }
+  });
+  return ok;
+}
+
+function goNext() {
+  if (!validateStep()) {
+    render();
+    var bad = document.querySelector('.field.invalid');
+    if (bad) bad.scrollIntoView({behavior:'smooth', block:'center'});
+    return;
+  }
+  if (cur < totalSteps() - 1) { cur++; render(); }
+  else submitForm();
+}
+
+function goBack() { if (cur > 0) { cur--; render(); } }
+
+function visibleFields() {
+  var out = [];
+  SECTIONS.forEach(function(sec) {
+    sec.fields.forEach(function(f) { if (fieldVisible(f)) out.push(f); });
+  });
+  return out;
+}
+
+function buildPlainText() {
+  var lines = ['Creative Blocks — Community Masterclass Application', ''];
+  SECTIONS.forEach(function(sec) {
+    lines.push('── ' + sec.title.toUpperCase() + ' ──');
+    sec.fields.forEach(function(f) {
+      if (!fieldVisible(f)) return;
+      var v = data[f.id];
+      lines.push(stripTags(f.q));
+      lines.push((v && String(v).trim()) ? v : '(not answered)');
+      lines.push('');
+    });
+  });
+  return lines.join('\n');
+}
+
+function buildPayload() {
+  var p = {
+    _subject: 'Masterclass Application — ' + (data.name || ''),
+    email: data.email || ''
+  };
+  visibleFields().forEach(function(f) {
+    if (f.id === 'email') return;
+    p[stripTags(f.q)] = (data[f.id] && String(data[f.id]).trim()) ? data[f.id] : '';
+  });
+  return p;
+}
+
+function thanksEl() { return document.getElementById('thanks'); }
+
+function showSubmitting() {
+  var el = thanksEl();
+  el.innerHTML = '<h1>One moment…</h1>'
+    + '<p class="sub">Creative Blocks Club</p>'
+    + '<div class="card"><p class="intro-p" style="text-align:center">Sending your application…</p></div>';
+  el.classList.remove('hidden');
+  window.scrollTo(0,0);
+}
+
+function showReceived() {
+  var name = (data.name || 'there').split(' ')[0];
+  var el = thanksEl();
+  el.innerHTML = '<h1>Thank you, <span class="accent">' + esc(name) + '</span>.</h1>'
+    + '<p class="sub">Creative Blocks Club · Application received</p>'
+    + '<div class="card"><div class="thanks-icon">✦</div>'
+    + '<p style="font-size:1.05rem;text-align:center;margin-bottom:6px">Your application is in.</p>'
+    + '<p class="intro-p" style="text-align:center">We read every application and follow up with next steps at the email you gave us. Thanks for offering to teach — that’s how this community gets better.</p></div>'
+    + '<div class="center"><button class="btn btn-restart" onclick="restart()">↺ Submit another</button></div>';
+  el.classList.remove('hidden');
+  window.scrollTo(0,0);
+}
+
+function showManualFallback(reason) {
+  var name = (data.name || 'there').split(' ')[0];
+  var body = buildPlainText();
+  var mailto = 'mailto:' + SUBMIT_EMAIL
+    + '?subject=' + encodeURIComponent('Masterclass Application — ' + (data.name || ''))
+    + '&body=' + encodeURIComponent(body);
+  var lead = reason === 'error'
+    ? 'We couldn’t submit automatically (network or config issue). You can still send your application directly:'
+    : 'Send your responses with one click, or copy them and share however you like. We read every application and follow up with next steps.';
+  var html = '<h1>Thank you, <span class="accent">' + esc(name) + '</span>.</h1>';
+  html += '<p class="sub">Creative Blocks Club · Application ready</p>';
+  html += '<div class="card"><div class="thanks-icon">✦</div>';
+  html += '<p style="font-size:1.05rem;text-align:center;margin-bottom:6px">Your application is ready to send.</p>';
+  html += '<p class="intro-p" style="text-align:center">' + lead + '</p>';
+  html += '<div class="center" style="margin-top:18px">';
+  html += '<a href="' + mailto + '"><button class="btn btn-next" style="font-size:0.95rem;padding:13px 28px">Send my application →</button></a>';
+  html += '</div>';
+  html += '<div class="center" style="margin-top:12px">';
+  html += '<button class="btn btn-back" onclick="copyResponses()">Copy my responses</button>';
+  html += '<span id="copyMsg" style="font-size:0.78rem;color:#547149;margin-left:10px;font-weight:600"></span>';
+  html += '</div></div>';
+  html += '<div class="card"><div class="review-q" style="margin-bottom:10px">Your responses</div><div id="finalSummary" style="font-size:0.85rem;color:#57534e;white-space:pre-wrap;line-height:1.6"></div></div>';
+  html += '<div class="center"><button class="btn btn-restart" onclick="restart()">↺ Start over</button></div>';
+  var el = thanksEl();
+  el.innerHTML = html;
+  document.getElementById('finalSummary').textContent = body;
+  el.classList.remove('hidden');
+  window.scrollTo(0,0);
+}
+
+function submitForm() {
+  document.getElementById('form').classList.add('hidden');
+  if (!FORMSPREE_ID) { showManualFallback('nopostconfig'); return; }
+  showSubmitting();
+  fetch('https://formspree.io/f/' + FORMSPREE_ID, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+    body: JSON.stringify(buildPayload())
+  }).then(function(r) {
+    if (r.ok) showReceived();
+    else showManualFallback('error');
+  }).catch(function() {
+    showManualFallback('error');
+  });
+}
+
+function copyResponses() {
+  var text = buildPlainText();
+  var done = function() {
+    var m = document.getElementById('copyMsg');
+    if (m) { m.textContent = 'Copied ✓'; setTimeout(function(){ m.textContent=''; }, 2500); }
+  };
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(done, done);
+  } else {
+    var ta = document.createElement('textarea');
+    ta.value = text; document.body.appendChild(ta); ta.select();
+    try { document.execCommand('copy'); } catch(e) {}
+    document.body.removeChild(ta); done();
+  }
+}
+
+function restart() {
+  cur = 0; data = {}; errs = {};
+  document.getElementById('thanks').classList.add('hidden');
+  document.getElementById('intro').classList.remove('hidden');
+  window.scrollTo(0,0);
+}
+</script>
+
+</body>
+</html>
