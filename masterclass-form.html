@@ -110,7 +110,12 @@ textarea { min-height: 96px; line-height: 1.55; }
 </div>
 
 <script>
-// ── Where applications are sent. Edit this to the club's intake address. ──
+// ── Submission config ──────────────────────────────────────────────
+// Formspree: create a form at https://formspree.io, then paste the ID
+// from your endpoint (the part after /f/, e.g. "xbjnqkpl") below.
+// While this is empty, the form falls back to email / copy-to-clipboard.
+var FORMSPREE_ID = "";
+// Fallback intake address used only when FORMSPREE_ID is empty.
 var SUBMIT_EMAIL = "hello@creativeblocks.club";
 
 var SECTIONS = [
@@ -121,6 +126,10 @@ var SECTIONS = [
       { id:"name", type:"text", required:true,
         q:"First &amp; last name",
         ph:"e.g. Jordan Rivera" },
+      { id:"email", type:"email", required:true,
+        q:"Email",
+        hint:"So we can follow up with next steps. Not shared publicly.",
+        ph:"you@example.com" },
       { id:"role", type:"text", required:true,
         q:"Profession / role",
         eg:"<strong>e.g.</strong> UX Designer · Therapist · Product Manager · Copywriter · Startup Founder · Marketing Strategist · Software Engineer" },
@@ -166,7 +175,8 @@ var SECTIONS = [
         q:"Have you ever hosted a workshop, training, webinar, or presentation before?",
         opts:["Yes","No"] },
       { id:"hosted_link", type:"text", required:false,
-        q:"If yes, feel free to share a link or example.",
+        showIf:{ field:"hosted", value:"Yes" },
+        q:"Feel free to share a link or example.",
         hint:"Optional.",
         ph:"Link or short description" },
       { id:"concise", type:"radio", required:true,
@@ -198,6 +208,7 @@ var SECTIONS = [
 ];
 
 var data = {};
+var errs = {};
 var cur = 0;
 
 function start() {
@@ -221,15 +232,16 @@ function render() {
     var html = '<div class="section-tag">' + sec.tag + '</div>';
     html += '<div class="section-title">' + sec.title + '</div>';
     sec.fields.forEach(function(f) {
+      if (!fieldVisible(f)) return;
       var val = data[f.id] || '';
-      html += '<div class="field" id="field-' + f.id + '">';
+      html += '<div class="field' + (errs[f.id] ? ' invalid' : '') + '" id="field-' + f.id + '">';
       html += '<div class="q-text">' + f.q;
       html += f.required ? ' <span class="req">*</span>' : ' <span class="opt-label">optional</span>';
       html += '</div>';
       if (f.hint) html += '<div class="q-hint">' + f.hint + '</div>';
       if (f.eg) html += '<div class="q-eg">' + f.eg + '</div>';
-      if (f.type === 'text') {
-        html += '<input type="text" id="in-' + f.id + '" value="' + esc(val) + '" placeholder="' + (f.ph||'') + '" oninput="setVal(\'' + f.id + '\',this.value)">';
+      if (f.type === 'text' || f.type === 'email') {
+        html += '<input type="' + (f.type === 'email' ? 'email' : 'text') + '" id="in-' + f.id + '" value="' + esc(val) + '" placeholder="' + (f.ph||'') + '" oninput="setVal(\'' + f.id + '\',this.value)">';
       } else if (f.type === 'textarea') {
         html += '<textarea id="in-' + f.id + '" placeholder="' + (f.ph||'') + '" oninput="setVal(\'' + f.id + '\',this.value)">' + esc(val) + '</textarea>';
       } else if (f.type === 'radio') {
@@ -238,7 +250,8 @@ function render() {
           html += '<div class="opt' + s + '" onclick="pickRadio(\'' + f.id + '\',' + oi + ')"><div class="dot"></div>' + esc(o) + '</div>';
         });
       }
-      html += '<div class="err">This one’s required.</div>';
+      if (f.note) html += '<div class="note">' + f.note + '</div>';
+      html += '<div class="err">' + (errs[f.id] || 'This one’s required.') + '</div>';
       html += '</div>';
     });
     document.getElementById('stepCard').innerHTML = html;
@@ -250,6 +263,7 @@ function render() {
     rhtml += '<div class="section-title">Review your application</div>';
     SECTIONS.forEach(function(sec) {
       sec.fields.forEach(function(f) {
+        if (!fieldVisible(f)) return;
         var v = data[f.id];
         rhtml += '<div class="review-row">';
         rhtml += '<div class="review-q">' + stripTags(f.q) + '</div>';
@@ -270,8 +284,20 @@ function stripTags(s) { return String(s).replace(/<[^>]*>/g,'').replace(/&amp;/g
 
 function setVal(id, v) {
   data[id] = v;
-  var fld = document.getElementById('field-' + id);
-  if (fld && v.trim()) fld.classList.remove('invalid');
+  if (v.trim()) {
+    delete errs[id];
+    var fld = document.getElementById('field-' + id);
+    if (fld) fld.classList.remove('invalid');
+  }
+}
+
+function fieldVisible(f) {
+  if (!f.showIf) return true;
+  return data[f.showIf.field] === f.showIf.value;
+}
+
+function isEmail(s) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(s).trim());
 }
 
 function findField(id) {
@@ -286,8 +312,7 @@ function pickRadio(id, oi) {
   var f = findField(id);
   if (!f) return;
   data[id] = f.opts[oi];
-  var fld = document.getElementById('field-' + id);
-  if (fld) fld.classList.remove('invalid');
+  delete errs[id];
   render();
 }
 
@@ -296,19 +321,18 @@ function validateStep() {
   var sec = SECTIONS[cur];
   var ok = true;
   sec.fields.forEach(function(f) {
-    var fld = document.getElementById('field-' + f.id);
-    if (f.required && (!data[f.id] || !String(data[f.id]).trim())) {
-      ok = false;
-      if (fld) fld.classList.add('invalid');
-    } else if (fld) {
-      fld.classList.remove('invalid');
-    }
+    if (!fieldVisible(f)) { delete errs[f.id]; return; }
+    var v = data[f.id] ? String(data[f.id]).trim() : '';
+    if (f.required && !v) { errs[f.id] = 'This one’s required.'; ok = false; }
+    else if (f.type === 'email' && v && !isEmail(v)) { errs[f.id] = 'Please enter a valid email address.'; ok = false; }
+    else { delete errs[f.id]; }
   });
   return ok;
 }
 
 function goNext() {
   if (!validateStep()) {
+    render();
     var bad = document.querySelector('.field.invalid');
     if (bad) bad.scrollIntoView({behavior:'smooth', block:'center'});
     return;
@@ -319,49 +343,109 @@ function goNext() {
 
 function goBack() { if (cur > 0) { cur--; render(); } }
 
+function visibleFields() {
+  var out = [];
+  SECTIONS.forEach(function(sec) {
+    sec.fields.forEach(function(f) { if (fieldVisible(f)) out.push(f); });
+  });
+  return out;
+}
+
 function buildPlainText() {
   var lines = ['Creative Blocks — Community Masterclass Application', ''];
   SECTIONS.forEach(function(sec) {
     lines.push('── ' + sec.title.toUpperCase() + ' ──');
     sec.fields.forEach(function(f) {
+      if (!fieldVisible(f)) return;
       var v = data[f.id];
       lines.push(stripTags(f.q));
-      lines.push((v && v.trim()) ? v : '(not answered)');
+      lines.push((v && String(v).trim()) ? v : '(not answered)');
       lines.push('');
     });
   });
   return lines.join('\n');
 }
 
-function submitForm() {
-  document.getElementById('form').classList.add('hidden');
+function buildPayload() {
+  var p = {
+    _subject: 'Masterclass Application — ' + (data.name || ''),
+    email: data.email || ''
+  };
+  visibleFields().forEach(function(f) {
+    if (f.id === 'email') return;
+    p[stripTags(f.q)] = (data[f.id] && String(data[f.id]).trim()) ? data[f.id] : '';
+  });
+  return p;
+}
+
+function thanksEl() { return document.getElementById('thanks'); }
+
+function showSubmitting() {
+  var el = thanksEl();
+  el.innerHTML = '<h1>One moment…</h1>'
+    + '<p class="sub">Creative Blocks Club</p>'
+    + '<div class="card"><p class="intro-p" style="text-align:center">Sending your application…</p></div>';
+  el.classList.remove('hidden');
+  window.scrollTo(0,0);
+}
+
+function showReceived() {
+  var name = (data.name || 'there').split(' ')[0];
+  var el = thanksEl();
+  el.innerHTML = '<h1>Thank you, <span class="accent">' + esc(name) + '</span>.</h1>'
+    + '<p class="sub">Creative Blocks Club · Application received</p>'
+    + '<div class="card"><div class="thanks-icon">✦</div>'
+    + '<p style="font-size:1.05rem;text-align:center;margin-bottom:6px">Your application is in.</p>'
+    + '<p class="intro-p" style="text-align:center">We read every application and follow up with next steps at the email you gave us. Thanks for offering to teach — that’s how this community gets better.</p></div>'
+    + '<div class="center"><button class="btn btn-restart" onclick="restart()">↺ Submit another</button></div>';
+  el.classList.remove('hidden');
+  window.scrollTo(0,0);
+}
+
+function showManualFallback(reason) {
   var name = (data.name || 'there').split(' ')[0];
   var body = buildPlainText();
   var mailto = 'mailto:' + SUBMIT_EMAIL
     + '?subject=' + encodeURIComponent('Masterclass Application — ' + (data.name || ''))
     + '&body=' + encodeURIComponent(body);
-
+  var lead = reason === 'error'
+    ? 'We couldn’t submit automatically (network or config issue). You can still send your application directly:'
+    : 'Send your responses with one click, or copy them and share however you like. We read every application and follow up with next steps.';
   var html = '<h1>Thank you, <span class="accent">' + esc(name) + '</span>.</h1>';
-  html += '<p class="sub">Creative Blocks Club · Application received</p>';
-  html += '<div class="card">';
-  html += '<div class="thanks-icon">✦</div>';
+  html += '<p class="sub">Creative Blocks Club · Application ready</p>';
+  html += '<div class="card"><div class="thanks-icon">✦</div>';
   html += '<p style="font-size:1.05rem;text-align:center;margin-bottom:6px">Your application is ready to send.</p>';
-  html += '<p class="intro-p" style="text-align:center">There’s no server behind this form yet — send your responses with one click, or copy them and share however you like. We read every application and follow up with next steps.</p>';
+  html += '<p class="intro-p" style="text-align:center">' + lead + '</p>';
   html += '<div class="center" style="margin-top:18px">';
   html += '<a href="' + mailto + '"><button class="btn btn-next" style="font-size:0.95rem;padding:13px 28px">Send my application →</button></a>';
   html += '</div>';
   html += '<div class="center" style="margin-top:12px">';
   html += '<button class="btn btn-back" onclick="copyResponses()">Copy my responses</button>';
-  html += '<span id="copyMsg" style="font-family:sans-serif;font-size:0.78rem;color:#2d7a3a;margin-left:10px"></span>';
+  html += '<span id="copyMsg" style="font-size:0.78rem;color:#547149;margin-left:10px;font-weight:600"></span>';
   html += '</div></div>';
-  html += '<div class="card"><div class="review-q" style="margin-bottom:10px">Your responses</div><div id="finalSummary" style="font-family:sans-serif;font-size:0.85rem;color:#555;white-space:pre-wrap;line-height:1.6"></div></div>';
+  html += '<div class="card"><div class="review-q" style="margin-bottom:10px">Your responses</div><div id="finalSummary" style="font-size:0.85rem;color:#57534e;white-space:pre-wrap;line-height:1.6"></div></div>';
   html += '<div class="center"><button class="btn btn-restart" onclick="restart()">↺ Start over</button></div>';
-
-  var el = document.getElementById('thanks');
+  var el = thanksEl();
   el.innerHTML = html;
   document.getElementById('finalSummary').textContent = body;
   el.classList.remove('hidden');
   window.scrollTo(0,0);
+}
+
+function submitForm() {
+  document.getElementById('form').classList.add('hidden');
+  if (!FORMSPREE_ID) { showManualFallback('nopostconfig'); return; }
+  showSubmitting();
+  fetch('https://formspree.io/f/' + FORMSPREE_ID, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+    body: JSON.stringify(buildPayload())
+  }).then(function(r) {
+    if (r.ok) showReceived();
+    else showManualFallback('error');
+  }).catch(function() {
+    showManualFallback('error');
+  });
 }
 
 function copyResponses() {
@@ -381,7 +465,7 @@ function copyResponses() {
 }
 
 function restart() {
-  cur = 0; data = {};
+  cur = 0; data = {}; errs = {};
   document.getElementById('thanks').classList.add('hidden');
   document.getElementById('intro').classList.remove('hidden');
   window.scrollTo(0,0);
