@@ -5,53 +5,66 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Creative Blocks — Community Masterclass Application</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
+/* Brand system pulled from creativeblocks.club:
+   bg #f5f3ef · ink #1c1917 · accent #c65a2e (dark #a94a24) ·
+   muted #78716c / #a8a29e · soft wash #fcefe8 · border #e7e5e4 ·
+   display Anton, body Inter */
 * { box-sizing: border-box; margin: 0; padding: 0; }
-body { font-family: Georgia, serif; background: #f7f5f0; color: #2c2c2c; min-height: 100vh; }
-.wrap { max-width: 640px; margin: 0 auto; padding: 32px 20px; }
-h1 { color: #C65A2E; font-weight: normal; font-size: 1.7rem; margin-bottom: 4px; }
-.sub { font-family: sans-serif; font-size: 0.83rem; color: #999; margin-bottom: 28px; }
-.card { background: white; border-radius: 12px; padding: 24px; margin-bottom: 16px; box-shadow: 0 2px 12px rgba(0,0,0,.06); }
-.progress-track { background: #e0dbd2; border-radius: 4px; height: 6px; margin-bottom: 6px; }
-.progress-fill { background: #C65A2E; height: 6px; border-radius: 4px; transition: width .3s; }
-.progress-label { font-family: sans-serif; font-size: 0.78rem; color: #999; margin-bottom: 20px; }
-.section-tag { font-family: sans-serif; font-size: 0.62rem; text-transform: uppercase; letter-spacing: 2px; color: #C65A2E; margin-bottom: 4px; }
-.section-title { font-size: 1.25rem; margin-bottom: 18px; }
-.field { margin-bottom: 22px; }
-.q-text { font-size: 1rem; line-height: 1.5; margin-bottom: 6px; }
-.q-text .req { color: #C65A2E; }
-.q-text .opt-label { font-family: sans-serif; font-size: 0.72rem; color: #bbb; text-transform: uppercase; letter-spacing: 1px; margin-left: 6px; }
-.q-hint { font-family: sans-serif; font-size: 0.8rem; color: #aaa; margin-bottom: 12px; font-style: italic; }
-.q-eg { font-family: sans-serif; font-size: 0.8rem; color: #999; margin-bottom: 12px; line-height: 1.6; }
-.q-eg strong { color: #888; font-style: normal; }
-input[type=text], textarea { width: 100%; font-family: sans-serif; font-size: 0.92rem; color: #2c2c2c; padding: 12px 14px; border: 2px solid #e8e4dc; border-radius: 8px; background: #fff; transition: border-color .15s; resize: vertical; }
-input[type=text]:focus, textarea:focus { outline: none; border-color: #C65A2E; background: #fdf8f5; }
-textarea { min-height: 92px; line-height: 1.5; }
-.opt { display: flex; align-items: flex-start; gap: 12px; padding: 12px 16px; border: 2px solid #e8e4dc; border-radius: 8px; cursor: pointer; margin-bottom: 10px; font-family: sans-serif; font-size: 0.88rem; line-height: 1.4; transition: all .15s; user-select: none; }
-.opt:hover { border-color: #C65A2E; background: #fdf8f5; }
-.opt.sel { border-color: #C65A2E; background: #fdf8f5; }
-.dot { width: 16px; height: 16px; border-radius: 50%; border: 2px solid #ccc; flex-shrink: 0; margin-top: 1px; transition: all .15s; }
-.opt.sel .dot { background: #C65A2E; border-color: #C65A2E; }
-.note { font-family: sans-serif; font-size: 0.82rem; color: #555; line-height: 1.6; background: #f7f5f0; border-radius: 8px; padding: 12px 14px; margin-top: 10px; }
-.note strong { color: #C65A2E; }
-.err { font-family: sans-serif; font-size: 0.78rem; color: #c0392b; margin-top: 6px; display: none; }
+body { font-family: 'Inter', -apple-system, sans-serif; background: #f5f3ef; color: #1c1917; min-height: 100vh; -webkit-font-smoothing: antialiased; }
+.wrap { max-width: 640px; margin: 0 auto; padding: 36px 20px; }
+h1 { font-family: 'Anton', sans-serif; font-weight: 400; font-size: 2.4rem; line-height: 1.05; text-transform: uppercase; letter-spacing: 0.5px; color: #1c1917; margin-bottom: 6px; }
+h1 .accent { color: #c65a2e; }
+.sub { font-size: 0.8rem; color: #a8a29e; margin-bottom: 28px; letter-spacing: 0.3px; }
+.card { background: #fff; border: 1px solid #e7e5e4; border-radius: 14px; padding: 26px; margin-bottom: 16px; box-shadow: 0 1px 3px rgba(28,25,23,.04); }
+.progress-track { background: #e7e5e4; border-radius: 4px; height: 6px; margin-bottom: 8px; }
+.progress-fill { background: #c65a2e; height: 6px; border-radius: 4px; transition: width .3s; }
+.progress-label { font-size: 0.76rem; color: #a8a29e; margin-bottom: 20px; font-weight: 500; }
+.section-tag { font-size: 0.66rem; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; color: #c65a2e; margin-bottom: 6px; }
+.section-title { font-family: 'Anton', sans-serif; font-weight: 400; font-size: 1.6rem; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 20px; color: #1c1917; }
+.field { margin-bottom: 24px; }
+.q-text { font-size: 1rem; font-weight: 600; line-height: 1.5; margin-bottom: 6px; color: #1c1917; }
+.q-text .req { color: #c65a2e; }
+.q-text .opt-label { font-size: 0.68rem; font-weight: 600; color: #a8a29e; text-transform: uppercase; letter-spacing: 1px; margin-left: 6px; }
+.q-hint { font-size: 0.82rem; color: #78716c; margin-bottom: 12px; }
+.q-eg { font-size: 0.8rem; color: #a8a29e; margin-bottom: 12px; line-height: 1.7; }
+.q-eg strong { color: #78716c; font-weight: 600; }
+input[type=text], textarea { width: 100%; font-family: 'Inter', sans-serif; font-size: 0.92rem; color: #1c1917; padding: 12px 14px; border: 1.5px solid #e7e5e4; border-radius: 9px; background: #fff; transition: all .15s; resize: vertical; }
+input[type=text]::placeholder, textarea::placeholder { color: #c4beb8; }
+input[type=text]:focus, textarea:focus { outline: none; border-color: #c65a2e; background: #fcefe8; }
+textarea { min-height: 96px; line-height: 1.55; }
+.opt { display: flex; align-items: flex-start; gap: 12px; padding: 13px 16px; border: 1.5px solid #e7e5e4; border-radius: 9px; cursor: pointer; margin-bottom: 10px; font-size: 0.9rem; line-height: 1.4; transition: all .15s; user-select: none; color: #1c1917; }
+.opt:hover { border-color: #c65a2e; background: #fcefe8; }
+.opt.sel { border-color: #c65a2e; background: #fcefe8; font-weight: 500; }
+.dot { width: 16px; height: 16px; border-radius: 50%; border: 2px solid #d6d3d1; flex-shrink: 0; margin-top: 1px; transition: all .15s; }
+.opt.sel .dot { background: #c65a2e; border-color: #c65a2e; box-shadow: inset 0 0 0 3px #fff; }
+.note { font-size: 0.83rem; color: #57534e; line-height: 1.65; background: #fcefe8; border-radius: 9px; padding: 13px 15px; margin-top: 12px; }
+.note strong { color: #a94a24; font-weight: 700; }
+.err { font-size: 0.78rem; color: #c44d4d; margin-top: 6px; display: none; font-weight: 500; }
 .field.invalid .err { display: block; }
-.field.invalid input[type=text], .field.invalid textarea { border-color: #e2b3ad; }
-.nav { display: flex; justify-content: space-between; margin-top: 8px; }
-.btn { font-family: sans-serif; font-size: 0.88rem; padding: 10px 24px; border-radius: 8px; cursor: pointer; border: none; }
-.btn-next { background: #C65A2E; color: white; }
-.btn-back { background: transparent; border: 2px solid #e0dbd2; color: #777; }
-.btn-back:disabled { color: #ccc; border-color: #eee; cursor: default; }
-.btn-restart { background: transparent; border: 2px solid #C65A2E; color: #C65A2E; }
-.center { text-align: center; margin-top: 12px; }
+.field.invalid input[type=text], .field.invalid textarea { border-color: #c44d4d; }
+.nav { display: flex; justify-content: space-between; margin-top: 8px; gap: 12px; }
+.btn { font-family: 'Inter', sans-serif; font-size: 0.85rem; font-weight: 600; padding: 12px 26px; border-radius: 9px; cursor: pointer; border: none; transition: all .15s; letter-spacing: 0.2px; }
+.btn-next { background: #c65a2e; color: #fff; }
+.btn-next:hover { background: #a94a24; }
+.btn-back { background: transparent; border: 1.5px solid #d6d3d1; color: #78716c; }
+.btn-back:hover:not(:disabled) { border-color: #78716c; }
+.btn-back:disabled { color: #d6d3d1; border-color: #ebe9e6; cursor: default; }
+.btn-restart { background: transparent; border: 1.5px solid #c65a2e; color: #c65a2e; }
+.btn-restart:hover { background: #fcefe8; }
+.center { text-align: center; margin-top: 14px; }
 .hidden { display: none; }
-.intro-p { font-family: sans-serif; font-size: 0.9rem; color: #666; line-height: 1.7; margin-top: 10px; }
-.review-row { font-family: sans-serif; font-size: 0.86rem; line-height: 1.6; padding: 12px 0; border-bottom: 1px solid #eee; }
+.intro-p { font-size: 0.92rem; color: #57534e; line-height: 1.75; margin-top: 12px; }
+.intro-p strong { color: #1c1917; font-weight: 600; }
+.review-row { font-size: 0.88rem; line-height: 1.6; padding: 14px 0; border-bottom: 1px solid #f0eeec; }
 .review-row:last-child { border-bottom: none; }
-.review-q { color: #999; font-size: 0.76rem; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; }
-.review-a { color: #2c2c2c; white-space: pre-wrap; }
-.review-a.empty { color: #bbb; font-style: italic; }
-.thanks-icon { font-size: 2.4rem; text-align: center; margin-bottom: 8px; }
+.review-q { color: #a8a29e; font-size: 0.72rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px; }
+.review-a { color: #1c1917; white-space: pre-wrap; }
+.review-a.empty { color: #c4beb8; font-style: italic; }
+.thanks-icon { font-size: 2rem; text-align: center; margin-bottom: 8px; color: #c65a2e; }
 </style>
 </head>
 <body>
@@ -59,7 +72,7 @@ textarea { min-height: 92px; line-height: 1.5; }
 
   <!-- INTRO -->
   <div id="intro">
-    <h1>Community Masterclass</h1>
+    <h1>Community <span class="accent">Masterclass</span></h1>
     <p class="sub">Creative Blocks Club · Expert Application · ~5 min</p>
     <div class="card">
       <p style="font-size:1.1rem">Teach something you know. To people who'll use it.</p>
@@ -69,7 +82,7 @@ textarea { min-height: 92px; line-height: 1.5; }
       <p class="intro-p">
         This isn't a webinar and it isn't a sales pitch. It's a member teaching one genuinely useful thing in a psychologically safe room. If that's you, this form is how you raise your hand.
       </p>
-      <p class="intro-p" style="color:#888">
+      <p class="intro-p" style="color:#a8a29e">
         Most questions are short. A few are paragraph answers — that's where we get to know how you think.
       </p>
       <div class="center">
@@ -80,7 +93,7 @@ textarea { min-height: 92px; line-height: 1.5; }
 
   <!-- FORM -->
   <div id="form" class="hidden">
-    <h1>Community Masterclass</h1>
+    <h1>Community <span class="accent">Masterclass</span></h1>
     <p class="sub">Creative Blocks Club · Expert Application</p>
     <div class="progress-track"><div class="progress-fill" id="pFill" style="width:0%"></div></div>
     <div class="progress-label" id="pLabel"></div>
@@ -328,7 +341,7 @@ function submitForm() {
     + '?subject=' + encodeURIComponent('Masterclass Application — ' + (data.name || ''))
     + '&body=' + encodeURIComponent(body);
 
-  var html = '<h1>Thank you, ' + esc(name) + '.</h1>';
+  var html = '<h1>Thank you, <span class="accent">' + esc(name) + '</span>.</h1>';
   html += '<p class="sub">Creative Blocks Club · Application received</p>';
   html += '<div class="card">';
   html += '<div class="thanks-icon">✦</div>';
