@@ -41,6 +41,10 @@ textarea { min-height: 96px; line-height: 1.55; }
 .opt.sel { border-color: #c65a2e; background: #fcefe8; font-weight: 500; }
 .dot { width: 16px; height: 16px; border-radius: 50%; border: 2px solid #d6d3d1; flex-shrink: 0; margin-top: 1px; transition: all .15s; }
 .opt.sel .dot { background: #c65a2e; border-color: #c65a2e; box-shadow: inset 0 0 0 3px #fff; }
+.pills { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 4px; }
+.pill { padding: 9px 15px; border: 1.5px solid #e7e5e4; border-radius: 9px; cursor: pointer; font-size: 0.88rem; font-weight: 500; color: #1c1917; background: #fff; transition: all .15s; user-select: none; white-space: nowrap; }
+.pill:hover { border-color: #c65a2e; background: #fcefe8; }
+.pill.sel { border-color: #c65a2e; background: #c65a2e; color: #fff; }
 .note { font-size: 0.83rem; color: #57534e; line-height: 1.65; background: #fcefe8; border-radius: 9px; padding: 13px 15px; margin-top: 12px; }
 .note strong { color: #a94a24; font-weight: 700; }
 .err { font-size: 0.78rem; color: #c44d4d; margin-top: 6px; display: none; font-weight: 500; }
@@ -77,10 +81,10 @@ textarea { min-height: 96px; line-height: 1.55; }
     <div class="card">
       <p style="font-size:1.1rem;line-height:1.4">Expert-led community sessions designed to share practical tools, insights, and skills across industries.</p>
       <p class="intro-p">
-        Learning Lab sessions are short and focused — <strong>15–25 minutes + Q&amp;A</strong> — where members teach the community one practical, transferable skill.
+        Learning Lab sessions are short and focused — <strong>15–25 minutes + Q&amp;A</strong> — <strong>where members teach the community one practical, transferable skill.</strong>
       </p>
       <p class="intro-p">
-        This isn't a TED talk and it isn't a sales pitch. It's a member teaching one genuinely useful thing in a safe space.
+        <em>This isn't a TED talk and it isn't a sales pitch.</em> It's a member teaching one genuinely useful thing in a safe space.
       </p>
       <p class="intro-p">
         If that's you, this form is how you raise your hand.
@@ -123,7 +127,7 @@ var SUBMIT_EMAIL = "hello@creativeblocks.club";
 
 var SECTIONS = [
   {
-    tag: "Section 1 of 4",
+    tag: "Section 1 of 5",
     title: "Basic Information",
     fields: [
       { id:"name", type:"text", required:true,
@@ -147,7 +151,7 @@ var SECTIONS = [
     ]
   },
   {
-    tag: "Section 2 of 4",
+    tag: "Section 2 of 5",
     title: "Your Session Idea",
     fields: [
       { id:"topic", type:"text", required:true,
@@ -161,7 +165,7 @@ var SECTIONS = [
     ]
   },
   {
-    tag: "Section 3 of 4",
+    tag: "Section 3 of 5",
     title: "Format & Logistics",
     fields: [
       { id:"hosted", type:"radio", required:true,
@@ -191,7 +195,21 @@ var SECTIONS = [
     ]
   },
   {
-    tag: "Section 4 of 4",
+    tag: "Section 4 of 5",
+    title: "Availability",
+    fields: [
+      { id:"dates", type:"checks", required:true, inline:true,
+        q:"Which June date(s) could you host?",
+        hint:"Pick all that work for you — selecting a few gives us flexibility.",
+        opts:["June 5","June 12","June 19","June 26"] },
+      { id:"daypart", type:"radio", required:true, inline:true,
+        q:"Do you prefer morning or afternoon?",
+        hint:"We’ll lock in the exact time together by email.",
+        opts:["Morning","Afternoon","Either works"] }
+    ]
+  },
+  {
+    tag: "Section 5 of 5",
     title: "Personal Motivation",
     fields: [
       { id:"motivation", type:"textarea", required:true,
@@ -227,7 +245,7 @@ function render() {
     html += '<div class="section-title">' + sec.title + '</div>';
     sec.fields.forEach(function(f) {
       if (!fieldVisible(f)) return;
-      var val = data[f.id] || '';
+      var val = valStr(f);
       html += '<div class="field' + (errs[f.id] ? ' invalid' : '') + '" id="field-' + f.id + '">';
       html += '<div class="q-text">' + f.q;
       html += f.required ? ' <span class="req">*</span>' : ' <span class="opt-label">optional</span>';
@@ -238,11 +256,22 @@ function render() {
         html += '<input type="' + (f.type === 'email' ? 'email' : 'text') + '" id="in-' + f.id + '" value="' + esc(val) + '" placeholder="' + (f.ph||'') + '" oninput="setVal(\'' + f.id + '\',this.value)">';
       } else if (f.type === 'textarea') {
         html += '<textarea id="in-' + f.id + '" placeholder="' + (f.ph||'') + '" oninput="setVal(\'' + f.id + '\',this.value)">' + esc(val) + '</textarea>';
-      } else if (f.type === 'radio') {
-        f.opts.forEach(function(o, oi) {
-          var s = (val === o) ? ' sel' : '';
-          html += '<div class="opt' + s + '" onclick="pickRadio(\'' + f.id + '\',' + oi + ')"><div class="dot"></div>' + esc(o) + '</div>';
-        });
+      } else if (f.type === 'radio' || f.type === 'checks') {
+        var multi = f.type === 'checks';
+        if (f.inline) {
+          html += '<div class="pills">';
+          f.opts.forEach(function(o, oi) {
+            var sel = multi ? (data[f.id] || []).indexOf(o) > -1 : (data[f.id] === o);
+            var fn = multi ? 'pickCheck' : 'pickRadio';
+            html += '<div class="pill' + (sel ? ' sel' : '') + '" onclick="' + fn + '(\'' + f.id + '\',' + oi + ')">' + esc(o) + '</div>';
+          });
+          html += '</div>';
+        } else {
+          f.opts.forEach(function(o, oi) {
+            var s = (data[f.id] === o) ? ' sel' : '';
+            html += '<div class="opt' + s + '" onclick="pickRadio(\'' + f.id + '\',' + oi + ')"><div class="dot"></div>' + esc(o) + '</div>';
+          });
+        }
       }
       if (f.note) html += '<div class="note">' + f.note + '</div>';
       html += '<div class="err">' + (errs[f.id] || 'This one’s required.') + '</div>';
@@ -258,10 +287,10 @@ function render() {
     SECTIONS.forEach(function(sec) {
       sec.fields.forEach(function(f) {
         if (!fieldVisible(f)) return;
-        var v = data[f.id];
+        var vs = valStr(f);
         rhtml += '<div class="review-row">';
         rhtml += '<div class="review-q">' + stripTags(f.q) + '</div>';
-        if (v && v.trim()) rhtml += '<div class="review-a">' + esc(v) + '</div>';
+        if (vs.trim()) rhtml += '<div class="review-a">' + esc(vs) + '</div>';
         else rhtml += '<div class="review-a empty">— not answered —</div>';
         rhtml += '</div>';
       });
@@ -275,6 +304,12 @@ function esc(s) {
   return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 function stripTags(s) { return String(s).replace(/<[^>]*>/g,'').replace(/&amp;/g,'&'); }
+
+function valStr(f) {
+  var v = data[f.id];
+  if (Array.isArray(v)) return v.join(', ');
+  return (v == null) ? '' : String(v);
+}
 
 function setVal(id, v) {
   data[id] = v;
@@ -310,14 +345,26 @@ function pickRadio(id, oi) {
   render();
 }
 
+function pickCheck(id, oi) {
+  var f = findField(id);
+  if (!f) return;
+  var o = f.opts[oi];
+  if (!Array.isArray(data[id])) data[id] = [];
+  var i = data[id].indexOf(o);
+  if (i > -1) data[id].splice(i, 1);
+  else data[id].push(o);
+  delete errs[id];
+  render();
+}
+
 function validateStep() {
   if (cur >= SECTIONS.length) return true;
   var sec = SECTIONS[cur];
   var ok = true;
   sec.fields.forEach(function(f) {
     if (!fieldVisible(f)) { delete errs[f.id]; return; }
-    var v = data[f.id] ? String(data[f.id]).trim() : '';
-    if (f.required && !v) { errs[f.id] = 'This one’s required.'; ok = false; }
+    var v = valStr(f).trim();
+    if (f.required && !v) { errs[f.id] = (f.type === 'checks') ? 'Pick at least one.' : 'This one’s required.'; ok = false; }
     else if (f.type === 'email' && v && !isEmail(v)) { errs[f.id] = 'Please enter a valid email address.'; ok = false; }
     else { delete errs[f.id]; }
   });
@@ -351,9 +398,9 @@ function buildPlainText() {
     lines.push('── ' + sec.title.toUpperCase() + ' ──');
     sec.fields.forEach(function(f) {
       if (!fieldVisible(f)) return;
-      var v = data[f.id];
+      var vs = valStr(f);
       lines.push(stripTags(f.q));
-      lines.push((v && String(v).trim()) ? v : '(not answered)');
+      lines.push(vs.trim() ? vs : '(not answered)');
       lines.push('');
     });
   });
@@ -367,7 +414,8 @@ function buildPayload() {
   };
   visibleFields().forEach(function(f) {
     if (f.id === 'email') return;
-    p[stripTags(f.q)] = (data[f.id] && String(data[f.id]).trim()) ? data[f.id] : '';
+    var vs = valStr(f);
+    p[stripTags(f.q)] = vs.trim() ? vs : '';
   });
   return p;
 }
@@ -391,7 +439,7 @@ function showReceived() {
     + '<div class="card"><div class="thanks-icon">✦</div>'
     + '<p style="font-size:1.05rem;text-align:center;margin-bottom:6px">Your application is in our inbox.</p>'
     + '<p class="intro-p" style="text-align:center">We read every application and follow up with next steps by sending you an email.</p>'
-    + '<p class="intro-p" style="text-align:center">Check your spam folder just in case.</p>'
+    + '<p class="intro-p" style="text-align:center;font-style:italic">Check your spam folder just in case.</p>'
     + '<p class="intro-p" style="text-align:center">Thanks for offering to share your skills.</p>'
     + '<p class="intro-p" style="text-align:center">That’s how a community grows stronger.</p>'
     + '<p class="intro-p" style="text-align:center;font-weight:700;color:#c65a2e">Let’s keep on exchanging knowledge, experience, and perspective.</p></div>'
