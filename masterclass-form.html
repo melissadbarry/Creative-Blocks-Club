@@ -80,7 +80,10 @@ textarea { min-height: 96px; line-height: 1.55; }
         Learning Lab sessions are short and focused — <strong>15–25 minutes + Q&amp;A</strong> — where members teach the community one practical, transferable skill.
       </p>
       <p class="intro-p">
-        This isn't a webinar and it isn't a sales pitch. It's a member teaching one genuinely useful thing in a psychologically safe room. If that's you, this form is how you raise your hand.
+        This isn't a TED talk and it isn't a sales pitch. It's a member teaching one genuinely useful thing in a safe space.
+      </p>
+      <p class="intro-p">
+        If that's you, this form is how you raise your hand.
       </p>
       <p class="intro-p" style="color:#a8a29e">
         Most questions are short. A few are paragraph answers — that's where we get to know how you think.
@@ -151,13 +154,10 @@ var SECTIONS = [
         q:"What specific, practical thing would you teach the Creative Blocks community?",
         hint:"Niche it down — the more pointed, the better. You can’t teach “branding” in 20 minutes, but you can teach one sharp, useful piece of it.",
         eg:"<strong>Think narrow:</strong> “How to write a one-line tagline” not “branding” · “The 3-part hook for a LinkedIn post” not “content” · “A 5-minute daily reset to beat procrastination” not “productivity”" },
-      { id:"insight", type:"textarea", required:true,
-        q:"What practical insight, skill, or perspective could participants apply to their own work, business, or creative life after your session?",
-        hint:"The transferable value — not just “what you do.”",
-        eg:"Could be: <strong>a mindset shift · a framework · a practical tool · a workflow · a communication strategy · a productivity approach · a leadership lesson · a creative process</strong>" },
-      { id:"walkaway", type:"textarea", required:true,
-        q:"What would participants walk away with after your session?",
-        hint:"Be concrete about the outcome." }
+      { id:"takeaway", type:"textarea", required:true,
+        q:"What will participants be able to apply to their own work, business, or creative life after your session?",
+        hint:"The concrete takeaway they leave with — a tool, framework, mindset shift, or skill they can use right away.",
+        eg:"Could be: <strong>a mindset shift · a framework · a practical tool · a workflow · a communication strategy · a productivity approach · a leadership lesson · a creative process</strong>" }
     ]
   },
   {
@@ -187,7 +187,7 @@ var SECTIONS = [
       { id:"sformat", type:"radio", required:false,
         q:"Preferred session format",
         hint:"Optional — helps us prep the room.",
-        opts:["Presentation","Live demo","Interactive discussion"] }
+        opts:["Presentation","Live demo","Workshop / interactive discussion"] }
     ]
   },
   {
@@ -389,8 +389,12 @@ function showReceived() {
   el.innerHTML = '<h1>Thank you, <span class="accent">' + esc(name) + '</span>.</h1>'
     + '<p class="sub">Creative Blocks Club · Application received</p>'
     + '<div class="card"><div class="thanks-icon">✦</div>'
-    + '<p style="font-size:1.05rem;text-align:center;margin-bottom:6px">Your application is in.</p>'
-    + '<p class="intro-p" style="text-align:center">We read every application and follow up with next steps at the email you gave us. Thanks for offering to teach — that’s how this community gets better.</p></div>'
+    + '<p style="font-size:1.05rem;text-align:center;margin-bottom:6px">Your application is in our inbox.</p>'
+    + '<p class="intro-p" style="text-align:center">We read every application and follow up with next steps by sending you an email.</p>'
+    + '<p class="intro-p" style="text-align:center">Check your spam folder just in case.</p>'
+    + '<p class="intro-p" style="text-align:center">Thanks for offering to share your skills.</p>'
+    + '<p class="intro-p" style="text-align:center">That’s how a community grows stronger.</p>'
+    + '<p class="intro-p" style="text-align:center;font-weight:700;color:#c65a2e">Let’s keep on exchanging knowledge, experience, and perspective.</p></div>'
     + '<div class="center"><button class="btn btn-restart" onclick="restart()">↺ Submit another</button></div>';
   el.classList.remove('hidden');
   window.scrollTo(0,0);
