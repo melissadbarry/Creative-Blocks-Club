@@ -5,69 +5,66 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Relevé de compte SumUp</title>
 <style>
+  @page { size: A4 landscape; margin: 10mm 12mm; }
+
   * { margin: 0; padding: 0; box-sizing: border-box; }
-  body { font-family: Arial, sans-serif; font-size: 11px; color: #222; background: #fff; }
-  .page { width: 210mm; min-height: 297mm; padding: 20mm 18mm 18mm 18mm; margin: 0 auto; background: #fff; }
+  body { font-family: Arial, sans-serif; font-size: 10px; color: #222; background: #fff; }
+  .page { width: 277mm; padding: 0; margin: 0 auto; background: #fff; }
 
   /* Header */
-  .header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; }
+  .header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 14px; }
   .logo { display: flex; align-items: center; gap: 8px; }
-  .logo-icon { width: 36px; height: 36px; background: #1a1a1a; border-radius: 6px; display: flex; align-items: center; justify-content: center; }
-  .logo-icon svg { width: 22px; height: 22px; fill: white; }
-  .logo-text { font-size: 22px; font-weight: bold; color: #1a1a1a; letter-spacing: -0.5px; }
-  .logo-text sup { font-size: 10px; }
-  .header-right { text-align: right; font-size: 10px; color: #444; line-height: 1.6; }
+  .logo-icon { width: 34px; height: 34px; background: #1a1a1a; border-radius: 6px; display: flex; align-items: center; justify-content: center; }
+  .logo-icon svg { width: 22px; height: 22px; }
+  .logo-text { font-size: 20px; font-weight: bold; color: #1a1a1a; letter-spacing: -0.5px; }
+  .logo-text sup { font-size: 9px; }
+  .header-right { text-align: right; font-size: 9.5px; color: #444; line-height: 1.6; }
 
-  .title { font-size: 22px; font-weight: bold; color: #1a1a1a; margin: 18px 0 16px 0; }
+  .title { font-size: 20px; font-weight: bold; color: #1a1a1a; margin: 12px 0 12px 0; }
 
   /* Info section */
-  .info-section { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 18px; }
-  .info-left { font-size: 10.5px; line-height: 1.7; color: #222; }
-  .info-right { text-align: right; font-size: 10.5px; line-height: 1.7; color: #222; }
-  .info-right .date-line { margin-bottom: 10px; }
+  .info-section { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 14px; }
+  .info-left { font-size: 10px; line-height: 1.7; color: #222; }
+  .info-right { text-align: right; font-size: 10px; line-height: 1.7; color: #222; }
+  .info-right .date-line { margin-bottom: 8px; }
   .summary-box { text-align: right; }
-  .summary-box div { font-size: 10.5px; }
 
   /* Table */
-  table { width: 100%; border-collapse: collapse; font-size: 9.5px; margin-top: 6px; }
+  table { width: 100%; border-collapse: collapse; font-size: 9px; margin-top: 4px; table-layout: fixed; }
+  thead { display: table-header-group; }
   thead tr { background: #3a4a5c; color: #fff; }
   thead th {
-    padding: 7px 5px;
+    padding: 6px 4px;
     text-align: left;
     font-weight: 600;
-    font-size: 9px;
+    font-size: 8.5px;
     line-height: 1.3;
     vertical-align: top;
+    word-wrap: break-word;
   }
-  tbody tr { border-bottom: 1px solid #e8e8e8; }
+  tbody tr { border-bottom: 1px solid #e8e8e8; page-break-inside: avoid; break-inside: avoid; }
   tbody tr:nth-child(even) { background: #fafafa; }
   tbody td {
-    padding: 7px 5px;
+    padding: 5px 4px;
     vertical-align: top;
-    line-height: 1.4;
+    line-height: 1.35;
     color: #222;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
   }
-  td.ref-pmt { color: #555; font-size: 8.5px; }
-  td.amount { text-align: right; }
-  td.solde { text-align: right; font-weight: 500; }
-  td.ref-pmt-block { font-size: 8.5px; color: #555; }
+  td.amount { text-align: right; white-space: nowrap; }
+  td.solde { text-align: right; font-weight: 600; white-space: nowrap; }
+  td.ref-pmt-block { font-size: 8px; color: #555; }
 
   /* Footer */
-  .footer { display: flex; justify-content: space-between; margin-top: 20px; font-size: 8px; color: #555; border-top: 1px solid #ddd; padding-top: 8px; }
+  .footer { display: flex; justify-content: space-between; margin-top: 14px; font-size: 7.5px; color: #555; border-top: 1px solid #ddd; padding-top: 6px; }
   .footer-right { text-align: right; }
 
-  /* Prevent rows from breaking across pages */
-  tbody tr { page-break-inside: avoid; break-inside: avoid; }
-  thead { display: table-header-group; }
-
   @media print {
-    .page { padding: 15mm 15mm; }
     body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
     tbody tr { page-break-inside: avoid; break-inside: avoid; }
     thead { display: table-header-group; }
   }
-
-  @page { size: A4; margin: 10mm 15mm; }
 </style>
 </head>
 <body>
@@ -120,16 +117,16 @@
   <table>
     <thead>
       <tr>
-        <th style="width:11%">Date de la<br>transaction</th>
-        <th style="width:11%">Code de la<br>transaction</th>
-        <th style="width:12%">Type de transaction</th>
-        <th style="width:22%">Référence</th>
-        <th style="width:9%">Référence<br>du<br>paiement</th>
+        <th style="width:10%">Date de la<br>transaction</th>
+        <th style="width:10%">Code de la<br>transaction</th>
+        <th style="width:11%">Type de transaction</th>
+        <th style="width:28%">Référence</th>
+        <th style="width:10%">Référence<br>du<br>paiement</th>
         <th style="width:7%">Statut</th>
         <th style="width:8%">Montant<br>facturé<br>débité</th>
         <th style="width:8%">Montant<br>facturé<br>crédité</th>
-        <th style="width:5%">Frais</th>
-        <th style="width:7%">Solde<br>disponible</th>
+        <th style="width:4%">Frais</th>
+        <th style="width:8%">Solde<br>disponible</th>
       </tr>
     </thead>
     <tbody>
