@@ -56,12 +56,18 @@
   .footer { display: flex; justify-content: space-between; margin-top: 20px; font-size: 8px; color: #555; border-top: 1px solid #ddd; padding-top: 8px; }
   .footer-right { text-align: right; }
 
+  /* Prevent rows from breaking across pages */
+  tbody tr { page-break-inside: avoid; break-inside: avoid; }
+  thead { display: table-header-group; }
+
   @media print {
     .page { padding: 15mm 15mm; }
     body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    tbody tr { page-break-inside: avoid; break-inside: avoid; }
+    thead { display: table-header-group; }
   }
 
-  @page { size: A4; margin: 0; }
+  @page { size: A4; margin: 10mm 15mm; }
 </style>
 </head>
 <body>
@@ -71,8 +77,9 @@
   <div class="header">
     <div class="logo">
       <div class="logo-icon">
-        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9V8h2v8zm4 0h-2V8h2v8z" fill="white"/>
+        <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+          <path d="M73.5 26.5 C73.5 26.5 58 26.5 50 26.5 C38.95 26.5 30 35.45 30 46.5 C30 57.55 38.95 66.5 50 66.5 C54.5 66.5 58.5 66.5 58.5 66.5 C64.02 66.5 68.5 70.98 68.5 76.5 C68.5 82.02 64.02 86.5 58.5 86.5 L26.5 86.5" stroke="white" stroke-width="13" stroke-linecap="round" fill="none"/>
+          <path d="M26.5 73.5 C26.5 73.5 42 73.5 50 73.5 C61.05 73.5 70 64.55 70 53.5 C70 42.45 61.05 33.5 50 33.5 C45.5 33.5 41.5 33.5 41.5 33.5 C35.98 33.5 31.5 29.02 31.5 23.5 C31.5 17.98 35.98 13.5 41.5 13.5 L73.5 13.5" stroke="white" stroke-width="13" stroke-linecap="round" fill="none"/>
         </svg>
       </div>
       <span class="logo-text">sumup<sup>®</sup></span>
